@@ -60,6 +60,7 @@ namespace Case_Management_System.Controllers
             {
                 _context.Add(caseType);
                 await _context.SaveChangesAsync();
+                TempData["success"] = "Case Type Created Successfully";
                 return RedirectToAction(nameof(Index));
             }
             return View(caseType);
@@ -98,6 +99,7 @@ namespace Case_Management_System.Controllers
                 try
                 {
                     _context.Update(caseType);
+                    TempData["success"] = "Case Type Updated Successfully";
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -146,6 +148,7 @@ namespace Case_Management_System.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["success"] = "Case Type Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }
 

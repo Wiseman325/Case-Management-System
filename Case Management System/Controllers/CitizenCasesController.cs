@@ -65,6 +65,7 @@ namespace Case_Management_System.Controllers
             {
                 _context.Add(citizenCase);
                 await _context.SaveChangesAsync();
+                TempData["success"] = "Citizen Case Created Successfully";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CaseNum"] = new SelectList(_context.cases, "CaseNum", "CaseNum", citizenCase.CaseNum);
@@ -107,6 +108,7 @@ namespace Case_Management_System.Controllers
                 try
                 {
                     _context.Update(citizenCase);
+                    TempData["success"] = "Citizen Case Updated Successfully";
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -159,6 +161,7 @@ namespace Case_Management_System.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["success"] = "Citizen Case Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }
 

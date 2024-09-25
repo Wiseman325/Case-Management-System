@@ -15,6 +15,7 @@
 
     <div class="card-body p-4">
         <form asp-action="Edit">
+            <input type="hidden" asp-for="CitizenId" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="CaseNum" />
 
@@ -26,11 +27,12 @@
                         <span asp-validation-for="CaseDescription" class="text-danger"></span>
                     </div>
 
-                    <div class="form-floating py-2">
-                        <label asp-for="IncidentDate" class="control-label"></label>
-                        <input type="date" asp-for="IncidentDate" class="form-control border-0 shadow" />
+                    <div class="form-floating py-2 col-12">
+                        <input type="date" asp-for="IncidentDate" class="form-control border-0 shadow" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        <label asp-for="IncidentDate" class="ms-2">Incident Date</label>
                         <span asp-validation-for="IncidentDate" class="text-danger"></span>
                     </div>
+
 
                     <div class="form-floating py-2">
                         <label asp-for="IncidentTime" class="control-label"></label>
@@ -44,11 +46,14 @@
                         <span asp-validation-for="Location" class="text-danger"></span>
                     </div>
 
-                    <div class="form-floating py-2">
-                        <label asp-for="Severity" class="control-label"></label>
-                        <input asp-for="Severity" class="form-control border-0 shadow" />
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="Severity" class="form-select border-0 shadow" asp-items="ViewBag.Severity">
+                            <option disabled selected>--Select Severity--</option>
+                        </select>
+                        <label asp-for="Severity" class="ms-2">Severity</label>
                         <span asp-validation-for="Severity" class="text-danger"></span>
                     </div>
+
 
                     <div class="form-floating py-2">
                         <label asp-for="CaseTypeId" class="control-label"></label>

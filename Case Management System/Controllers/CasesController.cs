@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Case_Management_System.DB;
 using Case_Management_System.Models;
+using System.Security.Claims;
 
 namespace Case_Management_System.Controllers
 {
@@ -48,25 +49,49 @@ namespace Case_Management_System.Controllers
         }
 
         // GET: Cases/Create
+        // GET: Cases/Create
         public IActionResult Create()
         {
-            ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeId");
-            ViewData["CitizenId"] = new SelectList(_context.applicationUsers, "Id", "Id");
-            ViewData["OfficerId"] = new SelectList(_context.applicationUsers, "Id", "Id");
+
+            ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" });
+
+            // Filter and populate CaseType dropdown with CaseTypeName
+            ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeName");
+
+            // Filter users with the "Citizen" role and populate dropdown with UserName
+            var citizenRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Citizen")?.Id;
+            var citizenUserIds = _context.UserRoles.Where(ur => ur.RoleId == citizenRoleId).Select(ur => ur.UserId).ToList();
+            var citizenUsers = _context.applicationUsers.Where(u => citizenUserIds.Contains(u.Id)).ToList();
+            ViewData["CitizenId"] = new SelectList(citizenUsers, "Id", "UserName");
+
+            // Filter users with the "Officer" role and populate dropdown with UserName
+            var officerRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Officer")?.Id;
+            var officerUserIds = _context.UserRoles.Where(ur => ur.RoleId == officerRoleId).Select(ur => ur.UserId).ToList();
+            var officerUsers = _context.applicationUsers.Where(u => officerUserIds.Contains(u.Id)).ToList();
+            ViewData["OfficerId"] = new SelectList(officerUsers, "Id", "UserName");
+
             return View();
         }
 
         // POST: Cases/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CaseNum,CaseDescription,IncidentDate,IncidentTime,Location,Severity,DateReported,CaseTypeId,CitizenId,OfficerId")] Case pcase)
         {
-            if (ModelState.IsValid)
+            var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            pcase.CitizenId = loggedInUserId;
+
+            //if (pcase.IncidentDate > DateTime.Today)
+            //{
+            //    ModelState.AddModelError("IncidentDate", "Incident date cannot be in the future.");
+            //}
+
+            if (!ModelState.IsValid)
             {
                 _context.Add(pcase);
                 await _context.SaveChangesAsync();
+                TempData["success"] = "Case Reported Successfully";
+
                 if (User.IsInRole(SD.Role_StationCommander) || User.IsInRole(SD.Role_Officer))
                 {
                     return RedirectToAction(nameof(Index));
@@ -77,21 +102,20 @@ namespace Case_Management_System.Controllers
                 }
             }
 
+            // Re-populate dropdowns if the form needs to be reloaded after validation errors
+            ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeName", pcase.CaseTypeId);
 
-            // Same filtering logic for the Foreman dropdown in case the form is reloaded
             var citizenRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Citizen")?.Id;
-            var citizen = _context.UserRoles
-                                  .Where(ur => ur.RoleId == citizenRoleId)
-                                  .Select(ur => ur.UserId).ToList();
+            var citizenUserIds = _context.UserRoles.Where(ur => ur.RoleId == citizenRoleId).Select(ur => ur.UserId).ToList();
+            var citizenUsers = _context.applicationUsers.Where(u => citizenUserIds.Contains(u.Id)).ToList();
+            ViewData["CitizenId"] = new SelectList(citizenUsers, "Id", "UserName", pcase.CitizenId);
 
-            var foremanUsers = _context.applicationUsers
-                                       .Where(u => citizen.Contains(u.Id))
-                                       .Select(u => new { u.Id, u.UserName })
-                                       .ToList();
+            var officerRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Officer")?.Id;
+            var officerUserIds = _context.UserRoles.Where(ur => ur.RoleId == officerRoleId).Select(ur => ur.UserId).ToList();
+            var officerUsers = _context.applicationUsers.Where(u => officerUserIds.Contains(u.Id)).ToList();
+            ViewData["OfficerId"] = new SelectList(officerUsers, "Id", "UserName", pcase.OfficerId);
+            ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" });
 
-            ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeId", pcase.CaseTypeId);
-            ViewData["CitizenId"] = new SelectList(_context.applicationUsers, "Id", "Id", pcase.CitizenId);
-            ViewData["OfficerId"] = new SelectList(_context.applicationUsers, "Id", "Id", pcase.OfficerId);
             return View(pcase);
         }
 
@@ -108,15 +132,24 @@ namespace Case_Management_System.Controllers
             {
                 return NotFound();
             }
-            ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeId", pcase.CaseTypeId);
-            ViewData["CitizenId"] = new SelectList(_context.applicationUsers, "Id", "Id", pcase.CitizenId);
-            ViewData["OfficerId"] = new SelectList(_context.applicationUsers, "Id", "Id", pcase.OfficerId);
+            ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" });
+
+            ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeName", pcase.CaseTypeId);
+
+            var citizenRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Citizen")?.Id;
+            var citizenUserIds = _context.UserRoles.Where(ur => ur.RoleId == citizenRoleId).Select(ur => ur.UserId).ToList();
+            var citizenUsers = _context.applicationUsers.Where(u => citizenUserIds.Contains(u.Id)).ToList();
+            ViewData["CitizenId"] = new SelectList(citizenUsers, "Id", "UserName", pcase.CitizenId);
+
+            var officerRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Officer")?.Id;
+            var officerUserIds = _context.UserRoles.Where(ur => ur.RoleId == officerRoleId).Select(ur => ur.UserId).ToList();
+            var officerUsers = _context.applicationUsers.Where(u => officerUserIds.Contains(u.Id)).ToList();
+            ViewData["OfficerId"] = new SelectList(officerUsers, "Id", "UserName", pcase.OfficerId);
+
             return View(pcase);
         }
 
         // POST: Cases/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CaseNum,CaseDescription,IncidentDate,IncidentTime,Location,Severity,DateReported,CaseTypeId,CitizenId,OfficerId")] Case pcase)
@@ -132,6 +165,7 @@ namespace Case_Management_System.Controllers
                 {
                     _context.Update(pcase);
                     await _context.SaveChangesAsync();
+                    TempData["success"] = "Case Updated Successfully";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -144,13 +178,26 @@ namespace Case_Management_System.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeId", pcase.CaseTypeId);
-            ViewData["CitizenId"] = new SelectList(_context.applicationUsers, "Id", "Id", pcase.CitizenId);
-            ViewData["OfficerId"] = new SelectList(_context.applicationUsers, "Id", "Id", pcase.OfficerId);
+
+            ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeName", pcase.CaseTypeId);
+
+            var citizenRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Citizen")?.Id;
+            var citizenUserIds = _context.UserRoles.Where(ur => ur.RoleId == citizenRoleId).Select(ur => ur.UserId).ToList();
+            var citizenUsers = _context.applicationUsers.Where(u => citizenUserIds.Contains(u.Id)).ToList();
+            ViewData["CitizenId"] = new SelectList(citizenUsers, "Id", "UserName", pcase.CitizenId);
+
+            var officerRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Officer")?.Id;
+            var officerUserIds = _context.UserRoles.Where(ur => ur.RoleId == officerRoleId).Select(ur => ur.UserId).ToList();
+            var officerUsers = _context.applicationUsers.Where(u => officerUserIds.Contains(u.Id)).ToList();
+            ViewData["OfficerId"] = new SelectList(officerUsers, "Id", "UserName", pcase.OfficerId);
+            ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" });
+
             return View(pcase);
         }
+
 
         // GET: Cases/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -185,6 +232,7 @@ namespace Case_Management_System.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["success"] = "Case Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }
 

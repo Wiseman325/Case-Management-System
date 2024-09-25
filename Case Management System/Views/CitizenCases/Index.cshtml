@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Case_Management_System.Models.CitizenCase>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Citizen Cases";
 }
 
 <div class="card shadow border-0 my-4">
@@ -14,26 +14,24 @@
     </div>
 
     <div class="card-body p-4">
-        <p>
-            <a asp-action="Create" class="btn btn-success">
-                <i class="bi bi-plus-circle"></i> Create New Citizen Case
-            </a>
-        </p>
-        <table class="table table-bordered table-striped" style="width:100%">
+        <div class="row pb-3">
+            <div class="col-6">
+                <!-- Left side could be used for filters, search, or other controls -->
+            </div>
+            <div class="col-6 text-end">
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Create New Citizen Case
+                </a>
+            </div>
+        </div>
+
+        <table id="tblData" class="table table-bordered table-striped" style="width:100%">
             <thead>
                 <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Citizen)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Case)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.DateReported)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Status)
-                    </th>
+                    <th>@Html.DisplayNameFor(model => model.Citizen.Id)</th>
+                    <th>@Html.DisplayNameFor(model => model.Case.CaseNum)</th>
+                    <th>@Html.DisplayNameFor(model => model.DateReported)</th>
+                    <th>@Html.DisplayNameFor(model => model.Status)</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -41,18 +39,10 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Citizen.Id)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Case.CaseNum)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DateReported)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Status)
-                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.Citizen.Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Case.CaseNum)</td>
+                        <td>@Html.DisplayFor(modelItem => item.DateReported)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.CitizenCaseId" class="btn btn-sm btn-warning">Edit</a>
                             <a asp-action="Delete" asp-route-id="@item.CitizenCaseId" class="btn btn-sm btn-danger">Delete</a>
@@ -63,3 +53,9 @@
         </table>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

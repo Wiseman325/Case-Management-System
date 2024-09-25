@@ -1,7 +1,7 @@
 ﻿@model Case_Management_System.Models.CitizenCase
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Citizen Case";
 }
 
 <div class="card shadow border-0 my-4">
@@ -14,42 +14,53 @@
     </div>
 
     <div class="card-body p-4">
-        <h4>CitizenCase</h4>
-        <hr />
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Create" method="post" class="row">
+            <div class="row">
+                <div class="col-12">
+                    <div class="border p-3">
 
-            <div class="form-group">
-                <label asp-for="CitizenId" class="control-label"></label>
-                <select asp-for="CitizenId" class="form-control" asp-items="ViewBag.CitizenId"></select>
-            </div>
+                        <div class="form-floating py-2 col-12">
+                            <select asp-for="CitizenId" class="form-select border-0 shadow" asp-items="ViewBag.CitizenId">
+                                <option disabled selected>--Select Citizen--</option>
+                            </select>
+                            <label asp-for="CitizenId" class="ms-2">Citizen</label>
+                            <span asp-validation-for="CitizenId" class="text-danger"></span>
+                        </div>
 
-            <div class="form-group">
-                <label asp-for="CaseNum" class="control-label"></label>
-                <select asp-for="CaseNum" class="form-control" asp-items="ViewBag.CaseNum"></select>
-            </div>
+                        <div class="form-floating py-2 col-12">
+                            <select asp-for="CaseNum" class="form-select border-0 shadow" asp-items="ViewBag.CaseNum">
+                                <option disabled selected>--Select Case Number--</option>
+                            </select>
+                            <label asp-for="CaseNum" class="ms-2">Case Number</label>
+                            <span asp-validation-for="CaseNum" class="text-danger"></span>
+                        </div>
 
-            <div class="form-group">
-                <label asp-for="DateReported" class="control-label"></label>
-                <input asp-for="DateReported" class="form-control" />
-                <span asp-validation-for="DateReported" class="text-danger"></span>
-            </div>
+                        <div class="form-floating py-2 col-12">
+                            <input type="date" asp-for="DateReported" class="form-control border-0 shadow" />
+                            <label asp-for="DateReported" class="ms-2">Date Reported</label>
+                            <span asp-validation-for="DateReported" class="text-danger"></span>
+                        </div>
 
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Status" class="form-control border-0 shadow" />
+                            <label asp-for="Status" class="ms-2">Status</label>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
 
-            <div class="form-group mt-3">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                        <div class="row pt-2">
+                            <div class="col-6 col-md-3">
+                                <button type="submit" class="btn btn-primary form-control">Create</button>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <a asp-action="Index" class="btn btn-outline-primary border form-control">Back to List</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </form>
     </div>
-</div>
-
-<div class="mt-3">
-    <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
 </div>
 
 @section Scripts {

@@ -1,7 +1,7 @@
 ﻿@model Case_Management_System.Models.CitizenCase
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Citizen Case Details";
 }
 
 <div class="card shadow border-0 my-4">
@@ -14,38 +14,55 @@
     </div>
 
     <div class="card-body p-4">
-        <h4>CitizenCase</h4>
-        <hr />
         <dl class="row">
-            <dt class="col-sm-2">
+            <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.Citizen)
             </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Citizen.Id)
+            <dd class="col-sm-9">
+                <div class="form-floating">
+                    <input class="form-control border-0 shadow" value="@Model.Citizen.Id" readonly />
+                    <label>@Html.DisplayNameFor(model => model.Citizen)</label>
+                </div>
             </dd>
-            <dt class="col-sm-2">
+
+            <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.Case)
             </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Case.CaseNum)
+            <dd class="col-sm-9">
+                <div class="form-floating">
+                    <input class="form-control border-0 shadow" value="@Model.Case.CaseNum" readonly />
+                    <label>@Html.DisplayNameFor(model => model.Case)</label>
+                </div>
             </dd>
-            <dt class="col-sm-2">
+
+            <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.DateReported)
             </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.DateReported)
+            <dd class="col-sm-9">
+                <div class="form-floating">
+                    <input class="form-control border-0 shadow" value="@Model.DateReported.ToString("yyyy-MM-dd")" readonly />
+                    <label>@Html.DisplayNameFor(model => model.DateReported)</label>
+                </div>
             </dd>
-            <dt class="col-sm-2">
+
+            <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.Status)
             </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Status)
+            <dd class="col-sm-9">
+                <div class="form-floating">
+                    <input class="form-control border-0 shadow" value="@Model.Status" readonly />
+                    <label>@Html.DisplayNameFor(model => model.Status)</label>
+                </div>
             </dd>
         </dl>
 
-        <div>
-            <a asp-action="Edit" asp-route-id="@Model?.CitizenCaseId" class="btn btn-warning">Edit</a>
-            <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+        <div class="row pt-4">
+            <div class="col-6 col-md-3">
+                <a asp-action="Edit" asp-route-id="@Model?.CitizenCaseId" class="btn btn-primary form-control">Edit</a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a asp-action="Index" class="btn btn-outline-primary border form-control">Back to List</a>
+            </div>
         </div>
     </div>
 </div>

@@ -15,6 +15,7 @@
 
     <div class="card-body p-4">
         <form asp-action="Create" class="row">
+            <input type="hidden" asp-for="CitizenId" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row">
                 <div class="col-md-12">
@@ -34,7 +35,7 @@
                         </div>
 
                         <div class="form-floating py-2 col-12">
-                            <input type="date" asp-for="IncidentDate" class="form-control border-0 shadow" />
+                            <input type="date" asp-for="IncidentDate" class="form-control border-0 shadow" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
                             <label asp-for="IncidentDate" class="ms-2">Incident Date</label>
                             <span asp-validation-for="IncidentDate" class="text-danger"></span>
                         </div>
@@ -52,16 +53,19 @@
                         </div>
 
                         <div class="form-floating py-2 col-12">
-                            <input asp-for="Severity" class="form-control border-0 shadow" />
+                            <select asp-for="Severity" class="form-select border-0 shadow" asp-items="ViewBag.Severity">
+                                <option disabled selected>--Select Severity--</option>
+                            </select>
                             <label asp-for="Severity" class="ms-2">Severity</label>
                             <span asp-validation-for="Severity" class="text-danger"></span>
                         </div>
 
-                        <div class="form-floating py-2 col-12">
+
+@*                         <div class="form-floating py-2 col-12">
                             <select asp-for="CitizenId" class="form-select border-0 shadow" asp-items="ViewBag.CitizenId"></select>
                             <label asp-for="CitizenId" class="ms-2">Citizen</label>
                             <span asp-validation-for="CitizenId" class="text-danger"></span>
-                        </div>
+                        </div> *@
 
                         @if (User.IsInRole(SD.Role_StationCommander))
                         {

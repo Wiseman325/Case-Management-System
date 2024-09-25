@@ -4,6 +4,7 @@ using Case_Management_System.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Case_Management_System.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240924115131_UpdatedApplicationUser")]
+    partial class UpdatedApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,104 +24,6 @@ namespace Case_Management_System.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Case_Management_System.Models.Case", b =>
-                {
-                    b.Property<int>("CaseNum")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CaseNum"));
-
-                    b.Property<string>("CaseDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CaseTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CitizenId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateOnly>("DateReported")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly>("IncidentDate")
-                        .HasColumnType("date");
-
-                    b.Property<TimeOnly>("IncidentTime")
-                        .HasColumnType("time");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OfficerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Severity")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CaseNum");
-
-                    b.HasIndex("CaseTypeId");
-
-                    b.HasIndex("CitizenId");
-
-                    b.HasIndex("OfficerId");
-
-                    b.ToTable("cases");
-                });
-
-            modelBuilder.Entity("Case_Management_System.Models.CaseType", b =>
-                {
-                    b.Property<int>("CaseTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CaseTypeId"));
-
-                    b.Property<string>("CaseTypeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CaseTypeId");
-
-                    b.ToTable("casesType");
-                });
-
-            modelBuilder.Entity("Case_Management_System.Models.CitizenCase", b =>
-                {
-                    b.Property<int>("CitizenCaseId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CitizenCaseId"));
-
-                    b.Property<int>("CaseNum")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CitizenId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateOnly>("DateReported")
-                        .HasColumnType("date");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CitizenCaseId");
-
-                    b.HasIndex("CaseNum");
-
-                    b.HasIndex("CitizenId");
-
-                    b.ToTable("citizenCases");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -343,57 +248,12 @@ namespace Case_Management_System.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PostalCode")
-                        .HasMaxLength(4)
-                        .HasColumnType("nvarchar(4)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StreetAddress")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
-                });
-
-            modelBuilder.Entity("Case_Management_System.Models.Case", b =>
-                {
-                    b.HasOne("Case_Management_System.Models.CaseType", "CaseType")
-                        .WithMany()
-                        .HasForeignKey("CaseTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Case_Management_System.Models.ApplicationUser", "Citizen")
-                        .WithMany()
-                        .HasForeignKey("CitizenId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Case_Management_System.Models.ApplicationUser", "Officer")
-                        .WithMany()
-                        .HasForeignKey("OfficerId");
-
-                    b.Navigation("CaseType");
-
-                    b.Navigation("Citizen");
-
-                    b.Navigation("Officer");
-                });
-
-            modelBuilder.Entity("Case_Management_System.Models.CitizenCase", b =>
-                {
-                    b.HasOne("Case_Management_System.Models.Case", "Case")
-                        .WithMany()
-                        .HasForeignKey("CaseNum")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Case_Management_System.Models.ApplicationUser", "Citizen")
-                        .WithMany()
-                        .HasForeignKey("CitizenId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Case");
-
-                    b.Navigation("Citizen");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

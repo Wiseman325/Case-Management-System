@@ -107,6 +107,17 @@ namespace Case_Management_System.Areas.Identity.Pages.Account
             public string? Role { get; set; }
             [ValidateNever]
             public IEnumerable<SelectListItem> RoleList { get; set; }
+
+            [Required]
+            public string FirstName { get; set; }
+            [Required]
+            public string LastName { get; set; }
+            public string? StreetAddress { get; set; }
+            public string? City { get; set; }
+            [StringLength(4, MinimumLength = 4, ErrorMessage = "Postal code must be exactly 4 characters long.")]
+            public string? PostalCode { get; set; }
+            [StringLength(10, MinimumLength = 10, ErrorMessage = "Phone number must be exactly 10 characters long.")]
+            public string? PhoneNumber { get; set; }
         }
 
 
@@ -142,6 +153,12 @@ namespace Case_Management_System.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                user.StreetAddress = Input.StreetAddress;
+                user.City = Input.City;
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+                user.PostalCode = Input.PostalCode;
+                user.PhoneNumber = Input.PhoneNumber;
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)

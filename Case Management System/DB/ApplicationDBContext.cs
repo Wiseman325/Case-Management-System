@@ -13,6 +13,9 @@ namespace Case_Management_System.DB
 
         }
 
+        public DbSet<Case> cases { get; set; }
+        public DbSet<CaseType> casesType { get; set; }
+        public DbSet<CitizenCase> citizenCases { get; set; }
         public DbSet<ApplicationUser> applicationUsers { get; set; }
     }
 }

@@ -1,0 +1,97 @@
+﻿@model Case_Management_System.Models.Case
+
+@{
+    ViewData["Title"] = "Create Case";
+}
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-primary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Report Case</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body p-4">
+        <form asp-action="Create" class="row">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="border p-3">
+                        <div class="form-floating py-2 col-12">
+                            <select asp-for="CaseTypeId" class="form-select border-0 shadow" asp-items="ViewBag.CaseTypeId">
+                                <option disabled selected>--Select Case Type--</option>
+                            </select>
+                            <label asp-for="CaseTypeId" class="ms-2">Case Type</label>
+                            <span asp-validation-for="CaseTypeId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="CaseDescription" class="form-control border-0 shadow" />
+                            <label asp-for="CaseDescription" class="ms-2">Case Description</label>
+                            <span asp-validation-for="CaseDescription" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input type="date" asp-for="IncidentDate" class="form-control border-0 shadow" />
+                            <label asp-for="IncidentDate" class="ms-2">Incident Date</label>
+                            <span asp-validation-for="IncidentDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input type="time" asp-for="IncidentTime" class="form-control border-0 shadow" />
+                            <label asp-for="IncidentTime" class="ms-2">Incident Time</label>
+                            <span asp-validation-for="IncidentTime" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Location" class="form-control border-0 shadow" />
+                            <label asp-for="Location" class="ms-2">Location</label>
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Severity" class="form-control border-0 shadow" />
+                            <label asp-for="Severity" class="ms-2">Severity</label>
+                            <span asp-validation-for="Severity" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <select asp-for="CitizenId" class="form-select border-0 shadow" asp-items="ViewBag.CitizenId"></select>
+                            <label asp-for="CitizenId" class="ms-2">Citizen</label>
+                            <span asp-validation-for="CitizenId" class="text-danger"></span>
+                        </div>
+
+                        @if (User.IsInRole(SD.Role_StationCommander))
+                        {
+                            <div class="form-floating py-2 col-12">
+                                <select asp-for="OfficerId" class="form-select border-0 shadow" asp-items="ViewBag.OfficerId"></select>
+                                <label asp-for="OfficerId" class="ms-2">Officer</label>
+                                <span asp-validation-for="OfficerId" class="text-danger"></span>
+                            </div>
+                        }
+
+                        <div class="row pt-2">
+                            <div class="col-6 col-md-3">
+                                <button type="submit" class="btn btn-primary form-control">Report</button>
+                            </div>
+                            @if(User.IsInRole(SD.Role_StationCommander) || (User.IsInRole(SD.Role_Officer)))
+                            {
+                                <div class="col-6 col-md-3">
+                                    <a asp-action="Index" class="btn btn-outline-primary border form-control">Back to List</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Case_Management_System.Models.Case>
+
+@{
+    ViewData["Title"] = "Case List";
+}
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Case List</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row pb-3">
+            <div class="col-6">
+                <!-- Left side could be used for filters, search, or other controls -->
+            </div>
+            <div class="col-6 text-end">
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Create New Case
+                </a>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.CaseDescription)</th>
+                    <th>@Html.DisplayNameFor(model => model.IncidentDate)</th>
+                    <th>@Html.DisplayNameFor(model => model.IncidentTime)</th>
+                    <th>@Html.DisplayNameFor(model => model.Location)</th>
+                    <th>@Html.DisplayNameFor(model => model.Severity)</th>
+                    <th>@Html.DisplayNameFor(model => model.DateReported)</th>
+                    <th>@Html.DisplayNameFor(model => model.CaseType.CaseTypeId)</th>
+                    <th>@Html.DisplayNameFor(model => model.Citizen.Id)</th>
+                    <th>@Html.DisplayNameFor(model => model.Officer.Id)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.CaseDescription)</td>
+                        <td>@Html.DisplayFor(modelItem => item.IncidentDate)</td>
+                        <td>@Html.DisplayFor(modelItem => item.IncidentTime)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Location)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Severity)</td>
+                        <td>@Html.DisplayFor(modelItem => item.DateReported)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CaseType.CaseTypeId)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Citizen.Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Officer.Id)</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.CaseNum" class="btn btn-sm btn-warning">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.CaseNum" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/case.js"></script>
+}

@@ -1,25 +1,27 @@
-﻿@model Case_Management_System.Models.Case
-
-@{
-    ViewData["Title"] = "Edit Case";
+﻿@{
+    ViewData["Title"] = "Assign Officer";
 }
+
+@model Case_Management_System.Models.Case
+
 <div class="card shadow border-0 my-4">
     <div class="card-header bg-primary bg-gradient ml-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="text-white py-2">Edit Case</h2>
+                <h2 class="text-white py-2">Assign Officer</h2>
             </div>
         </div>
     </div>
 
     <div class="card-body p-4">
-        <form asp-action="Edit">
+        <form asp-action="AssignOfficer">
+            <input type="hidden" asp-for="CaseNum" \
+            />
             <input type="hidden" asp-for="CitizenId" />
             <input type="hidden" asp-for="Severity" />
             <input type="hidden" asp-for="CaseTypeId" />
-            <input type="hidden" asp-for="OfficerId" />
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="CaseNum" />
 
             <div class="row">
                 <div class="col-md-12">
@@ -56,7 +58,7 @@
                     </div>
 
                     <div class="form-floating py-2">
-                        <label asp-for="CaseTypeId" class="control-label"></label>
+                        <label asp-for="CaseTypeId" class="control-label" readonly></label>
                         <select asp-for="CaseTypeId" class="form-select border-0 shadow" asp-items="ViewBag.CaseTypeId" disabled>
                             <option disabled selected>--Select Case Type--</option>
                         </select>
@@ -64,35 +66,25 @@
                     </div>
 
                     <div class="form-floating py-2">
-                        <label asp-for="CitizenId" class="control-label"></label>
+                        <label asp-for="CitizenId" class="control-label" readonly></label>
                         <select asp-for="CitizenId" class="form-select border-0 shadow" asp-items="ViewBag.CitizenId" disabled>
                             <option disabled selected>--Select Citizen--</option>
                         </select>
                         <span asp-validation-for="CitizenId" class="text-danger"></span>
                     </div>
 
+                    <!-- Officer Dropdown -->
                     <div class="form-floating py-2">
                         <label asp-for="OfficerId" class="control-label"></label>
-                        <select asp-for="OfficerId" class="form-select border-0 shadow" asp-items="ViewBag.OfficerId" disabled>
+                        <select asp-for="OfficerId" class="form-select border-0 shadow" asp-items="ViewBag.OfficerId">
                             <option disabled selected>--Select Officer--</option>
                         </select>
                         <span asp-validation-for="OfficerId" class="text-danger"></span>
                     </div>
 
-                    <div class="form-floating py-2">
-                        <label asp-for="Status" class="control-label"></label>
-                        <select asp-for="Status" class="form-select border-0 shadow" asp-items="ViewBag.Status">
-                            <option disabled selected>--Select Status--</option>
-                        </select>
-                        <span asp-validation-for="Status" class="text-danger"></span>
-                    </div>
-
                     <div class="row pt-2">
                         <div class="col-6 col-md-3">
                             <input type="submit" value="Save" class="btn btn-primary form-control" />
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <a asp-controller="Cases" asp-action="OfficerCases" class="btn btn-outline-primary form-control">Back to List</a>
                         </div>
                     </div>
                 </div>
@@ -102,8 +94,5 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }
-

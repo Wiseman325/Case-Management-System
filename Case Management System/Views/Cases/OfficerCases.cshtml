@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Case_Management_System.Models.Case>
+
+@{
+    ViewData["Title"] = "Assigned Cases";
+}
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-primary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Assigned Cases</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body p-4">
+        <div class="row pb-3">
+            <div class="col-6">
+                <!-- Additional controls can be added here if needed -->
+            </div>
+@*             <div class="col-6 text-end">
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Report New Case
+                </a>
+            </div> *@
+        </div>
+
+        <table class="table table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Case Number</th>
+                    <th>Case Type</th>
+                    <th>Status</th>
+                    <th>Date Reported</th>
+                    <th>Location</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pcase in Model)
+                {
+                    <tr>
+                        <td>@pcase.CaseNum</td>
+                        <td>@pcase.CaseType.CaseTypeName</td>
+                        <td>@pcase.Status</td>
+                        <td>@pcase.DateReported.ToShortDateString()</td>
+                        <td>@pcase.Location</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@pcase.CaseNum" class="btn btn-sm btn-info">View Details</a>
+                            <a asp-action="Edit" asp-route-id="@pcase.CaseNum" class="btn btn-sm btn-warning">Update Status</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

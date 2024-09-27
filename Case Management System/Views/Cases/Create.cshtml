@@ -61,11 +61,11 @@
                         </div>
 
 
-@*                         <div class="form-floating py-2 col-12">
+                        <div class="form-floating py-2 col-12">
                             <select asp-for="CitizenId" class="form-select border-0 shadow" asp-items="ViewBag.CitizenId"></select>
                             <label asp-for="CitizenId" class="ms-2">Citizen</label>
                             <span asp-validation-for="CitizenId" class="text-danger"></span>
-                        </div> *@
+                        </div>
 
                         @if (User.IsInRole(SD.Role_StationCommander))
                         {

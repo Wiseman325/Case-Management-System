@@ -88,6 +88,7 @@ namespace Case_Management_System.Controllers
 
             if (!ModelState.IsValid)
             {
+                pcase.Status = "Pending";
                 _context.Add(pcase);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "Case Reported Successfully";
@@ -134,6 +135,8 @@ namespace Case_Management_System.Controllers
             }
             ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" });
 
+            ViewData["Status"] = new SelectList(new List<string> { "Pending", "In Progress", "Resolved" }, pcase.Status);
+
             ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeName", pcase.CaseTypeId);
 
             var citizenRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Citizen")?.Id;
@@ -152,7 +155,7 @@ namespace Case_Management_System.Controllers
         // POST: Cases/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CaseNum,CaseDescription,IncidentDate,IncidentTime,Location,Severity,DateReported,CaseTypeId,CitizenId,OfficerId")] Case pcase)
+        public async Task<IActionResult> Edit(int id, [Bind("CaseNum,CaseDescription,IncidentDate,IncidentTime,Location,Severity,DateReported,Status,CaseTypeId,CitizenId,OfficerId")] Case pcase)
         {
             if (id != pcase.CaseNum)
             {
@@ -179,7 +182,7 @@ namespace Case_Management_System.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(OfficerCases));
             }
 
             ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeName", pcase.CaseTypeId);
@@ -195,8 +198,102 @@ namespace Case_Management_System.Controllers
             ViewData["OfficerId"] = new SelectList(officerUsers, "Id", "UserName", pcase.OfficerId);
             ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" });
 
+            ViewData["Status"] = new SelectList(new List<string> { "Pending", "In Progress", "Resolved" }, pcase.Status);
+
             return View(pcase);
         }
+
+
+        public async Task<IActionResult> AssignOfficer(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var pcase = await _context.cases.FindAsync(id);
+            if (pcase == null)
+            {
+                return NotFound();
+            }
+
+            // Populate the Severity dropdown
+            ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" }, pcase.Severity);
+
+            // Populate CaseType dropdown
+            ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeName", pcase.CaseTypeId);
+
+            // Populate Citizen dropdown
+            var citizenRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Citizen")?.Id;
+            var citizenUserIds = _context.UserRoles.Where(ur => ur.RoleId == citizenRoleId).Select(ur => ur.UserId).ToList();
+            var citizenUsers = _context.applicationUsers.Where(u => citizenUserIds.Contains(u.Id)).ToList();
+            ViewData["CitizenId"] = new SelectList(citizenUsers, "Id", "UserName", pcase.CitizenId);
+
+            // Populate Officer dropdown
+            var officerRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Officer")?.Id;
+            var officerUserIds = _context.UserRoles.Where(ur => ur.RoleId == officerRoleId).Select(ur => ur.UserId).ToList();
+            var officerUsers = _context.applicationUsers.Where(u => officerUserIds.Contains(u.Id)).ToList();
+            ViewData["OfficerId"] = new SelectList(officerUsers, "Id", "UserName", pcase.OfficerId);
+
+            return View(pcase);
+        }
+
+        // POST: Cases/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignOfficer(int id, [Bind("CaseNum,CaseDescription,IncidentDate,IncidentTime,Location,Severity,DateReported,CaseTypeId,CitizenId,OfficerId")] Case pcase)
+        {
+            if (id != pcase.CaseNum)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    pcase.Status = "Officer Assigned";
+                    _context.Update(pcase);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "Officer assigned to the case Successfully";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CaseExists(pcase.CaseNum))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                //return RedirectToAction(nameof(Index));
+
+            }
+
+            // If ModelState is invalid, repopulate the SelectLists to re-render the form correctly
+            ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeName", pcase.CaseTypeId);
+
+            var citizenRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Citizen")?.Id;
+            var citizenUserIds = _context.UserRoles.Where(ur => ur.RoleId == citizenRoleId).Select(ur => ur.UserId).ToList();
+            var citizenUsers = _context.applicationUsers.Where(u => citizenUserIds.Contains(u.Id)).ToList();
+            ViewData["CitizenId"] = new SelectList(citizenUsers, "Id", "UserName", pcase.CitizenId);
+
+            var officerRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Officer")?.Id;
+            var officerUserIds = _context.UserRoles.Where(ur => ur.RoleId == officerRoleId).Select(ur => ur.UserId).ToList();
+            var officerUsers = _context.applicationUsers.Where(u => officerUserIds.Contains(u.Id)).ToList();
+            ViewData["OfficerId"] = new SelectList(officerUsers, "Id", "UserName", pcase.OfficerId);
+
+            ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" }, pcase.Severity);
+
+            ViewData["Status"] = new SelectList(new List<string> { "Pending", "In Progress", "Resolved" }, pcase.Status);
+
+            return View(pcase);
+        }
+
+
 
 
         // GET: Cases/Delete/5
@@ -240,5 +337,23 @@ namespace Case_Management_System.Controllers
         {
             return _context.cases.Any(e => e.CaseNum == id);
         }
+
+        public async Task<IActionResult> OfficerCases()
+        {
+            // Get the currently logged-in officer's ID
+            var officerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Fetch the cases assigned to this officer
+            var assignedCases = await _context.cases
+                .Include(c => c.CaseType) // Include related case type information
+                .Include(c => c.Citizen)  // Include citizen information
+                .Where(c => c.OfficerId == officerId) // Filter by the officer's ID
+                .ToListAsync();
+
+            // Return the view with the assigned cases
+            return View(assignedCases);
+        }
+
     }
+
 }

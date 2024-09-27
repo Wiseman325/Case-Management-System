@@ -53,5 +53,7 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/caseType.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

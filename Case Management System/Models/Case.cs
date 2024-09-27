@@ -40,5 +40,7 @@ namespace Case_Management_System.Models
         [ForeignKey("OfficerId")]
         [ValidateNever]
         public ApplicationUser Officer { get; set; }
+
+        public string Status { get; set; } = "Pending";
     }
 }

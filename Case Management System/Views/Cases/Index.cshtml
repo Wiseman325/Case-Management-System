@@ -36,6 +36,7 @@
                     <th>@Html.DisplayNameFor(model => model.CaseType.CaseTypeId)</th>
                     <th>@Html.DisplayNameFor(model => model.Citizen.Id)</th>
                     <th>@Html.DisplayNameFor(model => model.Officer.Id)</th>
+                    <th>@Html.DisplayNameFor(model => model.Status)</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -52,9 +53,18 @@
                         <td>@Html.DisplayFor(modelItem => item.CaseType.CaseTypeId)</td>
                         <td>@Html.DisplayFor(modelItem => item.Citizen.Id)</td>
                         <td>@Html.DisplayFor(modelItem => item.Officer.Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.CaseNum" class="btn btn-sm btn-warning">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@item.CaseNum" class="btn btn-sm btn-danger">Delete</a>
+                            @if (User.IsInRole(SD.Role_StationCommander))
+                            {
+                                <a asp-action="AssignOfficer" asp-route-id="@item.CaseNum" class="btn btn-sm btn-warning">Assign Officer</a>
+                                <a asp-action="Delete" asp-route-id="@item.CaseNum" class="btn btn-sm btn-danger">Delete</a>
+                            }
+                            else
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.CaseNum" class="btn btn-sm btn-warning">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.CaseNum" class="btn btn-sm btn-danger">Delete</a>
+                            }
                         </td>
                     </tr>
                 }

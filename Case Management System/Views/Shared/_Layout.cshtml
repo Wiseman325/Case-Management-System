@@ -25,7 +25,7 @@
                         @if (User.IsInRole(SD.Role_Citizen))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="CitizenCases" asp-action="CitizenCasesProgress">My Cases</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="CitizenCases" asp-action="CitizenCasesProgress">View My Cases</a>
                             </li>  
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Cases" asp-action="Create">Report Case</a>
@@ -42,10 +42,10 @@
                                         <a class="nav-link text-dark" asp-area="" asp-controller="CitizenCases" asp-action="Index">Citizen Cases</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Cases" asp-action="Index">Cases</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Cases" asp-action="Index">All Reported Cases</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="CaseTypes" asp-action="Index">Case Types</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="CaseTypes" asp-action="Index">Add Case Types</a>
                                     </li>
                                 </ul>
                             </li>
@@ -53,10 +53,7 @@
                         @if (User.IsInRole(SD.Role_Officer))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="CitizenCases" asp-action="Index">Citizen Cases</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Cases" asp-action="Index">Cases</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Cases" asp-action="OfficerCases">View My Cases</a>
                             </li>
                         }
                     </ul>

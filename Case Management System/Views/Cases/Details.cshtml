@@ -107,11 +107,11 @@
         </dl>
 
         <div class="row pt-4">
-            <div class="col-6 col-md-3">
+@*             <div class="col-6 col-md-3">
                 <a asp-action="Edit" asp-route-id="@Model?.CaseNum" class="btn btn-primary form-control">Edit</a>
-            </div>
+            </div> *@
             <div class="col-6 col-md-3">
-                <a asp-action="Index" class="btn btn-outline-primary border form-control">Back to List</a>
+                <a asp-controller="Cases" asp-action="OfficerCases" class="btn btn-outline-primary border form-control">Back to List</a>
             </div>
         </div>
     </div>

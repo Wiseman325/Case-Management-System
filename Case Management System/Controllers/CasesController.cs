@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Case_Management_System.DB;
 using Case_Management_System.Models;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Case_Management_System.Controllers
 {
@@ -353,6 +354,61 @@ namespace Case_Management_System.Controllers
             // Return the view with the assigned cases
             return View(assignedCases);
         }
+
+
+        public async Task<IActionResult> TrackCases()
+        {
+            var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var applicationDBContext = await _context.cases
+                .Where(c => c.CitizenId == loggedInUserId)  // Only fetch cases for the logged-in citizen
+                .Include(p => p.CaseType)
+                .Include(p => p.Officer)
+                .ToListAsync();
+
+            return View(applicationDBContext);
+        }
+
+
+
+        //[HttpGet]
+        //[Authorize(Roles = "Citizen")]
+        //public async Task<IActionResult> TrackCases()
+        //{
+        //    // Retrieve the current logged-in citizen's ID
+        //    var citizenId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        //    if (string.IsNullOrEmpty(citizenId))
+        //    {
+        //        TempData["error"] = "You must be logged in to view your cases.";
+        //        return RedirectToAction("Login", "Account");
+        //    }
+
+        //    try
+        //    {
+        //        // Fetch all cases reported by this citizen
+        //        var citizenCases = await _context.citizenCases
+        //            .Where(c => c.CitizenId == citizenId)
+        //            .Include(c => c.Case)  // Include related case details
+        //            .ToListAsync();
+
+        //        // Check if any cases were found for the citizen
+        //        if (!citizenCases.Any())
+        //        {
+        //            TempData["info"] = "No cases found. You haven't reported any cases yet.";
+        //            return RedirectToAction("Index", "Cases");  // Redirect to Cases index if no cases exist
+        //        }
+
+        //        // Display the cases for the citizen
+        //        return View(citizenCases);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the exception (logging logic to be implemented based on your logging framework)
+        //        TempData["error"] = "An error occurred while fetching your cases. Please try again later.";
+        //        return RedirectToAction("Index", "Cases");  // Redirect to Cases index on error
+        //    }
+        //}
+
 
     }
 

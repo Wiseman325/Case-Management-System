@@ -1,111 +1,106 @@
 ﻿@model Case_Management_System.Models.Case
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Case";
 }
 
 <div class="card shadow border-0 my-4">
-    <div class="card-header bg-primary bg-gradient ml-0 py-3">
-        <div class="row">
-            <div class="col-12 text-center">
-                <h2 class="text-white py-2">Delete Case</h2>
-            </div>
-        </div>
+    <div class="card-header bg-danger text-white text-center py-4">
+        <h2 class="text-white mb-0">Delete Case</h2>
     </div>
 
     <div class="card-body p-4">
-        <h3>Are you sure you want to delete this?</h3>
-        <h4>Case Details</h4>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.CaseDescription)
-            </dt>
-            <dd class="col-sm-9">
-                <div class="form-floating">
-                    <input class="form-control border-0 shadow" value="@Model.CaseDescription" readonly />
-                    <label>@Html.DisplayNameFor(model => model.CaseDescription)</label>
-                </div>
-            </dd>
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.IncidentDate)
-            </dt>
-            <dd class="col-sm-9">
-                <div class="form-floating">
-                    <input class="form-control border-0 shadow" value="@Model.IncidentDate.ToString("yyyy-MM-dd")" readonly />
-                    <label>@Html.DisplayNameFor(model => model.IncidentDate)</label>
-                </div>
-            </dd>
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.IncidentTime)
-            </dt>
-            <dd class="col-sm-9">
-                <div class="form-floating">
-                    <input class="form-control border-0 shadow" value="@Model.IncidentTime" readonly />
-                    <label>@Html.DisplayNameFor(model => model.IncidentTime)</label>
-                </div>
-            </dd>
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.Location)
-            </dt>
-            <dd class="col-sm-9">
-                <div class="form-floating">
-                    <input class="form-control border-0 shadow" value="@Model.Location" readonly />
-                    <label>@Html.DisplayNameFor(model => model.Location)</label>
-                </div>
-            </dd>
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.Severity)
-            </dt>
-            <dd class="col-sm-9">
-                <div class="form-floating">
-                    <input class="form-control border-0 shadow" value="@Model.Severity" readonly />
-                    <label>@Html.DisplayNameFor(model => model.Severity)</label>
-                </div>
-            </dd>
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.DateReported)
-            </dt>
-            <dd class="col-sm-9">
-                <div class="form-floating">
-                    <input class="form-control border-0 shadow" value="@Model.DateReported.ToString("yyyy-MM-dd")" readonly />
-                    <label>@Html.DisplayNameFor(model => model.DateReported)</label>
-                </div>
-            </dd>
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.CaseType.CaseTypeId)
-            </dt>
-            <dd class="col-sm-9">
-                <div class="form-floating">
-                    <input class="form-control border-0 shadow" value="@Model.CaseType.CaseTypeId" readonly />
-                    <label>@Html.DisplayNameFor(model => model.CaseType.CaseTypeId)</label>
-                </div>
-            </dd>
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.Citizen.Id)
-            </dt>
-            <dd class="col-sm-9">
-                <div class="form-floating">
-                    <input class="form-control border-0 shadow" value="@Model.Citizen.Id" readonly />
-                    <label>@Html.DisplayNameFor(model => model.Citizen.Id)</label>
-                </div>
-            </dd>
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.Officer.Id)
-            </dt>
-            <dd class="col-sm-9">
-                <div class="form-floating">
-                    <input class="form-control border-0 shadow" value="@Model.Officer.Id" readonly />
-                    <label>@Html.DisplayNameFor(model => model.Officer.Id)</label>
-                </div>
-            </dd>
-        </dl>
+        <div class="alert alert-warning text-center">
+            <h4 class="alert-heading">Are you sure you want to close this case?</h4>
+            <p>Once closed, you will not be able to recover this case.</p>
+        </div>
 
-        <form asp-action="Delete">
-            <input type="hidden" asp-for="CaseNum" />
-            <input type="submit" value="Delete" class="btn btn-danger" />
-            <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
-        </form>
+        <div class="border rounded p-3 mb-4 bg-light shadow-sm">
+            <hr />
+            <dl class="row">
+                <!-- Case Description -->
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CaseDescription)</dt>
+                <dd class="col-sm-9">
+                    <div class="form-floating">
+                        <input class="form-control border-0 bg-white shadow-sm" value="@Model.CaseDescription" readonly />
+                        <label>@Html.DisplayNameFor(model => model.CaseDescription)</label>
+                    </div>
+                </dd>
+
+                <!-- Incident Date -->
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IncidentDate)</dt>
+                <dd class="col-sm-9">
+                    <div class="form-floating">
+                        <input class="form-control border-0 bg-white shadow-sm" value="@Model.IncidentDate.ToString("yyyy-MM-dd")" readonly />
+                        <label>@Html.DisplayNameFor(model => model.IncidentDate)</label>
+                    </div>
+                </dd>
+
+                <!-- Incident Time -->
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IncidentTime)</dt>
+                <dd class="col-sm-9">
+                    <div class="form-floating">
+                        <input class="form-control border-0 bg-white shadow-sm" value="@Model.IncidentTime" readonly />
+                        <label>@Html.DisplayNameFor(model => model.IncidentTime)</label>
+                    </div>
+                </dd>
+
+                <!-- Location -->
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Location)</dt>
+                <dd class="col-sm-9">
+                    <div class="form-floating">
+                        <input class="form-control border-0 bg-white shadow-sm" value="@Model.Location" readonly />
+                        <label>@Html.DisplayNameFor(model => model.Location)</label>
+                    </div>
+                </dd>
+
+
+                <!-- Date Reported -->
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.DateReported)</dt>
+                <dd class="col-sm-9">
+                    <div class="form-floating">
+                        <input class="form-control border-0 bg-white shadow-sm" value="@Model.DateReported.ToString("yyyy-MM-dd")" readonly />
+                        <label>@Html.DisplayNameFor(model => model.DateReported)</label>
+                    </div>
+                </dd>
+
+                <!-- Case Type ID -->
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CaseType.CaseTypeId)</dt>
+                <dd class="col-sm-9">
+                    <div class="form-floating">
+                        <input class="form-control border-0 bg-white shadow-sm" value="@Model.CaseType.CaseTypeId" readonly />
+                        <label>@Html.DisplayNameFor(model => model.CaseType.CaseTypeId)</label>
+                    </div>
+                </dd>
+
+                <!-- Citizen ID -->
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Citizen.Id)</dt>
+                <dd class="col-sm-9">
+                    <div class="form-floating">
+                        <input class="form-control border-0 bg-white shadow-sm" value="@Model.Citizen.Id" readonly />
+                        <label>@Html.DisplayNameFor(model => model.Citizen.Id)</label>
+                    </div>
+                </dd>
+
+                <!-- Officer ID -->
+            </dl>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-between">
+            <form asp-action="Delete" class="me-3">
+                <input type="hidden" asp-for="CaseNum" />
+                <input type="submit" value="Close Case" class="btn btn-danger btn-lg px-4" />
+            </form>
+            @if (User.IsInRole(SD.Role_Citizen))
+            {
+                <a asp-action="TrackCases" class="btn btn-outline-primary btn-lg px-4">Back to List</a>
+            }
+            else
+            {
+                <a asp-action="Index" class="btn btn-outline-primary btn-lg px-4">Back to List</a>
+            }
+        </div>
     </div>
 </div>
 

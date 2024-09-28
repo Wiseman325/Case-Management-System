@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Case_Management_System.DB;
 using Case_Management_System.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Case_Management_System.Controllers
 {
@@ -169,5 +171,57 @@ namespace Case_Management_System.Controllers
         {
             return _context.citizenCases.Any(e => e.CitizenCaseId == id);
         }
+
+        public async Task<IActionResult> TrackCases()
+        {
+            var applicationDBContext = _context.cases.Include(p => p.CaseType).Include(p => p.Citizen).Include(p => p.Officer);
+
+            if (!applicationDBContext.Any())
+            {
+                // Return the "NoCases" view if there are no cases
+                return View("NoCases");
+            }
+
+            return View(await applicationDBContext.ToListAsync());
+        }
+
+
+        //[HttpGet]
+        //[Authorize(Roles = "Citizen")]
+        //public async Task<IActionResult> TrackCases()
+        //{
+        //    // Retrieve the current logged-in citizen's ID
+        //    var citizenId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        //    if (string.IsNullOrEmpty(citizenId))
+        //    {
+        //        TempData["error"] = "You must be logged in to view your cases.";
+        //        return RedirectToAction("Login", "Account");
+        //    }
+
+        //    try
+        //    {
+        //        // Fetch all cases reported by this citizen
+        //        var citizenCases = await _context.citizenCases
+        //            .Where(c => c.CitizenId == citizenId)
+        //            .Include(c => c.Case)  // Include related case details
+        //            .ToListAsync();
+
+        //        // Check if any cases were found for the citizen
+        //        if (!citizenCases.Any())
+        //        {
+        //            return View("NoCases");  // Redirect if no cases exist
+        //        }
+
+        //        return View(citizenCases);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the exception (logging logic to be implemented based on your logging framework)
+        //        TempData["error"] = "An error occurred while fetching your cases. Please try again later.";
+        //        return RedirectToAction("Index", "Home");
+        //    }
+        //}
+
     }
 }

@@ -1,0 +1,10 @@
+﻿@{
+    ViewData["Title"] = "No Cases Found";
+}
+
+<div class="container text-center mt-5">
+    <h2 class="text-danger">No Cases Found</h2>
+    <p class="lead">It looks like there are no cases to display at the moment.</p>
+    <p>If you're a citizen, please consider reporting a new case.</p>
+    <a href="@Url.Action("Create", "Cases")" class="btn btn-primary mt-3">Report a New Case</a>
+</div>

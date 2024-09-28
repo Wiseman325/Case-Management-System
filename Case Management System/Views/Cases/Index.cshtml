@@ -17,11 +17,11 @@
             <div class="col-6">
                 <!-- Left side could be used for filters, search, or other controls -->
             </div>
-            <div class="col-6 text-end">
+@*             <div class="col-6 text-end">
                 <a asp-action="Create" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> Create New Case
                 </a>
-            </div>
+            </div> *@
         </div>
 
         <table class="table table-bordered table-striped" style="width:100%">
@@ -31,10 +31,8 @@
                     <th>@Html.DisplayNameFor(model => model.IncidentDate)</th>
                     <th>@Html.DisplayNameFor(model => model.IncidentTime)</th>
                     <th>@Html.DisplayNameFor(model => model.Location)</th>
-                    <th>@Html.DisplayNameFor(model => model.Severity)</th>
                     <th>@Html.DisplayNameFor(model => model.DateReported)</th>
                     <th>@Html.DisplayNameFor(model => model.CaseType.CaseTypeId)</th>
-                    <th>@Html.DisplayNameFor(model => model.Citizen.Id)</th>
                     <th>@Html.DisplayNameFor(model => model.Officer.Id)</th>
                     <th>@Html.DisplayNameFor(model => model.Status)</th>
                     <th>Actions</th>
@@ -48,9 +46,7 @@
                         <td>@Html.DisplayFor(modelItem => item.IncidentDate)</td>
                         <td>@Html.DisplayFor(modelItem => item.IncidentTime)</td>
                         <td>@Html.DisplayFor(modelItem => item.Location)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Severity)</td>
                         <td>@Html.DisplayFor(modelItem => item.DateReported)</td>
-                        <td>@Html.DisplayFor(modelItem => item.CaseType.CaseTypeId)</td>
                         <td>@Html.DisplayFor(modelItem => item.Citizen.Id)</td>
                         <td>@Html.DisplayFor(modelItem => item.Officer.Id)</td>
                         <td>@Html.DisplayFor(modelItem => item.Status)</td>
@@ -58,12 +54,12 @@
                             @if (User.IsInRole(SD.Role_StationCommander))
                             {
                                 <a asp-action="AssignOfficer" asp-route-id="@item.CaseNum" class="btn btn-sm btn-warning">Assign Officer</a>
-                                <a asp-action="Delete" asp-route-id="@item.CaseNum" class="btn btn-sm btn-danger">Delete</a>
+                                <a asp-action="Details" asp-route-id="@item.CaseNum" class="btn btn-sm btn-primary">More Details</a>
                             }
                             else
                             {
                                 <a asp-action="Edit" asp-route-id="@item.CaseNum" class="btn btn-sm btn-warning">Edit</a>
-                                <a asp-action="Delete" asp-route-id="@item.CaseNum" class="btn btn-sm btn-danger">Delete</a>
+                                <a asp-action="Delete" asp-route-id="@item.CaseNum" class="btn btn-sm btn-danger"></a>
                             }
                         </td>
                     </tr>

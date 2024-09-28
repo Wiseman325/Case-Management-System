@@ -54,16 +54,19 @@
                     <label>@Html.DisplayNameFor(model => model.Location)</label>
                 </div>
             </dd>
+            @if (!User.IsInRole(SD.Role_Citizen))
+            {
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Severity)
+                </dt>
+                <dd class="col-sm-9">
+                    <div class="form-floating">
+                        <input class="form-control border-0 shadow" value="@Model.Severity" readonly />
+                        <label>@Html.DisplayNameFor(model => model.Severity)</label>
+                    </div>
+                </dd>
+            }
 
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.Severity)
-            </dt>
-            <dd class="col-sm-9">
-                <div class="form-floating">
-                    <input class="form-control border-0 shadow" value="@Model.Severity" readonly />
-                    <label>@Html.DisplayNameFor(model => model.Severity)</label>
-                </div>
-            </dd>
 
             <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.DateReported)
@@ -84,16 +87,19 @@
                     <label>@Html.DisplayNameFor(model => model.CaseType.CaseTypeId)</label>
                 </div>
             </dd>
-
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.Citizen.Id)
-            </dt>
-            <dd class="col-sm-9">
-                <div class="form-floating">
-                    <input class="form-control border-0 shadow" value="@Model.Citizen.Id" readonly />
-                    <label>@Html.DisplayNameFor(model => model.Citizen.Id)</label>
-                </div>
-            </dd>
+            @if (!User.IsInRole(SD.Role_Citizen))
+            {
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Citizen.Id)
+                </dt>
+                <dd class="col-sm-9">
+                    <div class="form-floating">
+                        <input class="form-control border-0 shadow" value="@Model.Citizen.Id" readonly />
+                        <label>@Html.DisplayNameFor(model => model.Citizen.Id)</label>
+                    </div>
+                </dd>
+            }
+           
 
             <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.Officer.Id)
@@ -105,15 +111,28 @@
                 </div>
             </dd>
         </dl>
-
-        <div class="row pt-4">
-@*             <div class="col-6 col-md-3">
-                <a asp-action="Edit" asp-route-id="@Model?.CaseNum" class="btn btn-primary form-control">Edit</a>
+        @if (User.IsInRole(SD.Role_Citizen))
+        {
+            <div class="row pt-4">
+                @*             <div class="col-6 col-md-3">
+            <a asp-action="Edit" asp-route-id="@Model?.CaseNum" class="btn btn-primary form-control">Edit</a>
             </div> *@
-            <div class="col-6 col-md-3">
-                <a asp-controller="Cases" asp-action="OfficerCases" class="btn btn-outline-primary border form-control">Back to List</a>
+                <div class="col-6 col-md-3">
+                    <a asp-controller="Cases" asp-action="TrackCases" class="btn btn-outline-primary border form-control">Back to List</a>
+                </div>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="row pt-4">
+                @*             <div class="col-6 col-md-3">
+            <a asp-action="Edit" asp-route-id="@Model?.CaseNum" class="btn btn-primary form-control">Edit</a>
+            </div> *@
+                <div class="col-6 col-md-3">
+                    <a asp-controller="Cases" asp-action="Index" class="btn btn-outline-primary border form-control">Back to List</a>
+                </div>
+            </div>
+        }
     </div>
 </div>
 

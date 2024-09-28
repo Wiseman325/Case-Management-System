@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Case_Management_System.Models.Case>
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">My Cases</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            You have not reported any cases yet.
+        </div>
+    }
+    else
+    {
+        <div class="row justify-content-center">
+            @foreach (var citizenCase in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Case Number: @citizenCase.CaseNum</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-2"><strong>Date Reported:</strong> @citizenCase.DateReported.ToShortDateString()</p>
+                            <p class="mb-2"><strong>Case Description:</strong> @Html.DisplayFor(modelItem => citizenCase.CaseDescription)</p>
+                            <p class="mb-2"><strong>Status:</strong> @citizenCase.Status</p>
+                            <div class="d-flex justify-content-between">
+                                <a href="@Url.Action("Details", "Cases", new { id = citizenCase.CaseNum })" class="btn btn-sm btn-outline-primary">
+                                    More Details
+                                </a>
+                                <a href="@Url.Action("Delete", "Cases", new { id = citizenCase.CaseNum })" class="btn btn-sm btn-outline-danger">
+                                    Close case
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Optional JavaScript for interaction
+    </script>
+}

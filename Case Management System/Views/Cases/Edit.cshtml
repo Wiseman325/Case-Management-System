@@ -15,11 +15,12 @@
     <div class="card-body p-4">
         <form asp-action="Edit">
             <input type="hidden" asp-for="CitizenId" />
-            <input type="hidden" asp-for="Severity" />
+            @* <input type="hidden" asp-for="Severity" /> *@
             <input type="hidden" asp-for="CaseTypeId" />
             <input type="hidden" asp-for="OfficerId" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="CaseNum" />
+            <input type="hidden" asp-for="Evidence" />
 
             <div class="row">
                 <div class="col-md-12">
@@ -45,15 +46,23 @@
                         <label asp-for="Location" class="control-label"></label>
                         <input asp-for="Location" class="form-control border-0 shadow" readonly />
                         <span asp-validation-for="Location" class="text-danger"></span>
+                    </div>  
+                    <div class="form-floating py-2">
+                        <label asp-for="Priority" class="control-label"></label>
+                        <input asp-for="Priority" class="form-control border-0 shadow" readonly />
+                        <span asp-validation-for="Priority" class="text-danger"></span>
+                    </div>      
+
+                    <div class="form-floating py-2">
+                        <label asp-for="StreetAddress" class="control-label"></label>
+                        <input asp-for="StreetAddress" class="form-control border-0 shadow" readonly />
+                        <span asp-validation-for="StreetAddress" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2">
+                        <input type="file" class="form-control border-0 shadow" readonly />
+                        <label asp-for="Evidence" class="ms-2"></label>>
                     </div>
 
-                    <div class="form-floating py-2 col-12">
-                        <select asp-for="Severity" class="form-select border-0 shadow" asp-items="ViewBag.Severity" disabled>
-                            <option disabled selected>--Select Severity--</option>
-                        </select>
-                        <label asp-for="Severity" class="ms-2">Severity</label>
-                        <span asp-validation-for="Severity" class="text-danger"></span>
-                    </div>
 
                     <div class="form-floating py-2">
                         <label asp-for="CaseTypeId" class="control-label"></label>

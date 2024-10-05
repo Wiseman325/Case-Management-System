@@ -14,11 +14,21 @@ namespace Case_Management_System.Models
     {
         [Key]
         public int CaseNum { get; set; }
+        [Required]
         public string CaseDescription { get; set; }
+        [Required]
         public DateOnly IncidentDate { get; set; }
+        [Required]
         public TimeOnly IncidentTime { get; set; }
+        [Required]
         public string Location { get; set; }
-        public string Severity { get; set; }
+        [Required]
+        public string StreetAddress { get; set; }
+        [ValidateNever]
+        public string? Evidence { get; set; }
+        [ValidateNever]
+
+        public string Priority { get; set; }
 
         public DateOnly DateReported { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
@@ -33,8 +43,8 @@ namespace Case_Management_System.Models
         public string CitizenId { get; set; }
         [ForeignKey("CitizenId")]
         [ValidateNever]
-        public ApplicationUser Citizen { get; set; } 
-        
+        public ApplicationUser Citizen { get; set; }
+
         [Display(Name = "Officer Id")]
         public string? OfficerId { get; set; }
         [ForeignKey("OfficerId")]
@@ -42,5 +52,46 @@ namespace Case_Management_System.Models
         public ApplicationUser Officer { get; set; }
 
         public string Status { get; set; } = "Pending";
+
+        public string? StatusReason { get; set; }
+
+        public void SetPriority()
+        {
+            switch (CaseNum)
+            {
+                case 1: // Emergency
+                case 2: // Criminal Activity
+                case 3: // Medical Assistance
+                case 4: // Medical Assistance
+                case 5: // Medical Assistance
+                case 6: // Medical Assistance
+                case 7: // Medical Assistance
+                    Priority = "High";
+                    break;
+
+                case 8: // Public Disturbance
+                case 9: // Traffic Incident
+                case 10: // Traffic Incident
+                case 11: // Traffic Incident
+                case 12: // Traffic Incident
+                case 13: // Traffic Incident
+                    Priority = "Medium";
+                    break;
+
+                case 14: // Lost and Found
+                case 15: // Maintenance Request
+                case 16: // Maintenance Request
+                case 17: // Maintenance Request
+                case 18: // Maintenance Request
+                case 19: // Inquiry
+                case 20: // Inquiry
+                    Priority = "Low";
+                    break;
+
+                default:
+                    Priority = "Unknown"; // In case the CaseTypeId is unrecognized
+                    break;
+            }
+        }
     }
 }

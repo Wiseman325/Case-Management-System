@@ -14,7 +14,7 @@
     </div>
 
     <div class="card-body p-4">
-        <form asp-action="Create" class="row">
+        <form asp-action="Create" class="row" enctype="multipart/form-data" method="post">
             <input type="hidden" asp-for="CitizenId" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row">
@@ -24,14 +24,13 @@
                             <select asp-for="CaseTypeId" class="form-select border-0 shadow" asp-items="ViewBag.CaseTypeId">
                                 <option disabled selected>--Select Case Type--</option>
                             </select>
-                            <label asp-for="CaseTypeId" class="ms-2">Case Type</label>
+                            <label asp-for="CaseTypeId" class="ms-2 text-muted">Case Type</label>
                             <span asp-validation-for="CaseTypeId" class="text-danger"></span>
                         </div>
 
-                        <div class="form-floating py-2 col-12">
-                            <input asp-for="CaseDescription" class="form-control border-0 shadow" />
+                        <div class="py-2 col-12">
                             <label asp-for="CaseDescription" class="ms-2">Case Description</label>
-                            <span asp-validation-for="CaseDescription" class="text-danger"></span>
+                            <textarea asp-for="CaseDescription" class="form-control border-0 shadow"></textarea>
                         </div>
 
                         <div class="form-floating py-2 col-12">
@@ -52,23 +51,29 @@
                             <span asp-validation-for="Location" class="text-danger"></span>
                         </div>
 
+
+                        <div class="form-floating py-2">
+                            <label asp-for="StreetAddress" class="control-label"></label>
+                            <input asp-for="StreetAddress" class="form-control border-0 shadow" />
+                            <span asp-validation-for="StreetAddress" class="text-danger"></span>
+                        </div>
+
                         <div class="form-floating py-2 col-12">
-                            <select asp-for="Severity" class="form-select border-0 shadow" asp-items="ViewBag.Severity">
-                                <option disabled selected>--Select Severity--</option>
-                            </select>
-                            <label asp-for="Severity" class="ms-2">Severity</label>
-                            <span asp-validation-for="Severity" class="text-danger"></span>
+                            <input type="file" name="file" class="form-control border-0 shadow" />
+                            <label asp-for="Evidence" class="ms-2"></label>
                         </div>
 
 
-                        <div class="form-floating py-2 col-12">
-                            <select asp-for="CitizenId" class="form-select border-0 shadow" asp-items="ViewBag.CitizenId"></select>
-                            <label asp-for="CitizenId" class="ms-2">Citizen</label>
-                            <span asp-validation-for="CitizenId" class="text-danger"></span>
-                        </div>
+
 
                         @if (User.IsInRole(SD.Role_StationCommander))
                         {
+                            <div class="form-floating py-2 col-12">
+                                <select asp-for="CitizenId" class="form-select border-0 shadow" asp-items="ViewBag.CitizenId"></select>
+                                <label asp-for="CitizenId" class="ms-2">Citizen</label>
+                                <span asp-validation-for="CitizenId" class="text-danger"></span>
+                            </div>
+
                             <div class="form-floating py-2 col-12">
                                 <select asp-for="OfficerId" class="form-select border-0 shadow" asp-items="ViewBag.OfficerId"></select>
                                 <label asp-for="OfficerId" class="ms-2">Officer</label>
@@ -87,6 +92,10 @@
                                 </div>
                             }
                         </div>
+
+                        <span class="text-success">
+                            @ViewBag.Message
+                        </span>
                     </div>
                 </div>
             </div>
@@ -95,6 +104,13 @@
 </div>
 
 @section Scripts {
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample    table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline  |  | align lineheight  | removeformat',
+        });
+    </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

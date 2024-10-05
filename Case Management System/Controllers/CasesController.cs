@@ -9,16 +9,18 @@ using Case_Management_System.DB;
 using Case_Management_System.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Case_Management_System.Controllers
 {
     public class CasesController : Controller
     {
         private readonly ApplicationDBContext _context;
-
-        public CasesController(ApplicationDBContext context)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public CasesController(ApplicationDBContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Cases
@@ -52,9 +54,7 @@ namespace Case_Management_System.Controllers
         // GET: Cases/Create
         // GET: Cases/Create
         public IActionResult Create()
-        {
-
-            ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" });
+         {
 
             // Filter and populate CaseType dropdown with CaseTypeName
             ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeName");
@@ -74,55 +74,75 @@ namespace Case_Management_System.Controllers
             return View();
         }
 
-        // POST: Cases/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CaseNum,CaseDescription,IncidentDate,IncidentTime,Location,Severity,DateReported,CaseTypeId,CitizenId,OfficerId")] Case pcase)
+        public async Task<IActionResult> Create([Bind("CaseNum,CaseDescription,IncidentDate,IncidentTime,Location,StreetAddress,DateReported,CaseTypeId,CitizenId,OfficerId,StatusReason")] Case pcase, IFormFile file)
         {
+            //string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+            //if (!Directory.Exists(uploadsFolder))
+            //{
+            //    Directory.CreateDirectory(uploadsFolder);
+            //}
+            //string fileName = Path.GetFileName(file.FileName);
+            //string fileSavedPath = Path.Combine(uploadsFolder, fileName);
+
+            //using (FileStream stream = new FileStream(fileSavedPath, FileMode.Create))
+            //{
+            //    await file.CopyToAsync(stream);
+            //}
+            //ViewBag.Message = fileName + " uploaded successfully!";
+
+            
             var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             pcase.CitizenId = loggedInUserId;
 
-            //if (pcase.IncidentDate > DateTime.Today)
-            //{
-            //    ModelState.AddModelError("IncidentDate", "Incident date cannot be in the future.");
-            //}
-
             if (!ModelState.IsValid)
             {
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                if (file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string evidencePath = Path.Combine(wwwRootPath, @"files\evidence");
+
+                    if (!string.IsNullOrEmpty(pcase.Evidence))
+                    {
+                        var oldImagePath = Path.Combine(wwwRootPath, pcase.Evidence.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
+                    using (var fileStream = new FileStream(Path.Combine(evidencePath, fileName), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+
+                    pcase.Evidence = @"files\evidence\" + fileName;
+                }
+
+                // Set Priority based on CaseNum
+                pcase.SetPriority();
                 pcase.Status = "Pending";
+
                 _context.Add(pcase);
                 await _context.SaveChangesAsync();
-                TempData["success"] = "Case Reported Successfully";
 
-                if (User.IsInRole(SD.Role_StationCommander) || User.IsInRole(SD.Role_Officer))
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Home");
-                }
+                TempData["success"] = "Case Reported Successfully";
+                return RedirectToAction(nameof(Index));
             }
 
-            // Re-populate dropdowns if the form needs to be reloaded after validation errors
+            // Repopulate dropdowns if validation fails
             ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeName", pcase.CaseTypeId);
-
-            var citizenRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Citizen")?.Id;
-            var citizenUserIds = _context.UserRoles.Where(ur => ur.RoleId == citizenRoleId).Select(ur => ur.UserId).ToList();
-            var citizenUsers = _context.applicationUsers.Where(u => citizenUserIds.Contains(u.Id)).ToList();
-            ViewData["CitizenId"] = new SelectList(citizenUsers, "Id", "UserName", pcase.CitizenId);
-
-            var officerRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Officer")?.Id;
-            var officerUserIds = _context.UserRoles.Where(ur => ur.RoleId == officerRoleId).Select(ur => ur.UserId).ToList();
-            var officerUsers = _context.applicationUsers.Where(u => officerUserIds.Contains(u.Id)).ToList();
-            ViewData["OfficerId"] = new SelectList(officerUsers, "Id", "UserName", pcase.OfficerId);
-            ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" });
+            ViewData["CitizenId"] = new SelectList(_context.applicationUsers, "Id", "UserName", pcase.CitizenId);
+            ViewData["OfficerId"] = new SelectList(_context.applicationUsers, "Id", "UserName", pcase.OfficerId);
 
             return View(pcase);
         }
 
+
         // GET: Cases/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, IFormFile? file)
         {
             if (id == null)
             {
@@ -135,7 +155,6 @@ namespace Case_Management_System.Controllers
                 return NotFound();
             }
             ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" });
-
             ViewData["Status"] = new SelectList(new List<string> { "Pending", "In Progress", "Resolved" }, pcase.Status);
 
             ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeName", pcase.CaseTypeId);
@@ -153,10 +172,9 @@ namespace Case_Management_System.Controllers
             return View(pcase);
         }
 
-        // POST: Cases/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CaseNum,CaseDescription,IncidentDate,IncidentTime,Location,Severity,DateReported,Status,CaseTypeId,CitizenId,OfficerId")] Case pcase)
+        public async Task<IActionResult> Edit(int id, [Bind("CaseNum,CaseDescription,IncidentDate,IncidentTime,Location,StreetAddress,Evidence,DateReported,CaseTypeId,CitizenId,OfficerId,Status,StatusReason")] Case pcase, IFormFile? file)
         {
             if (id != pcase.CaseNum)
             {
@@ -167,6 +185,36 @@ namespace Case_Management_System.Controllers
             {
                 try
                 {
+                    string wwwRootPath = _webHostEnvironment.WebRootPath;
+                    if (file != null)
+                    {
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                        string evidencePath = Path.Combine(wwwRootPath, @"files\evidence");
+
+                        if (!string.IsNullOrEmpty(pcase.Evidence))
+                        {
+                            var oldImagePath = Path.Combine(wwwRootPath, pcase.Evidence.TrimStart('\\'));
+
+                            if (System.IO.File.Exists(oldImagePath))
+                            {
+                                System.IO.File.Delete(oldImagePath);
+                            }
+                        }
+S
+                        using (var fileStream = new FileStream(Path.Combine(evidencePath, fileName), FileMode.Create))
+                        {
+                            file.CopyTo(fileStream);
+                        }
+
+                        pcase.Evidence = @"files\evidence\" + fileName;
+                    }
+                    // Set Priority based on CaseNum
+                    pcase.SetPriority();
+                    //if(pcase.CaseNum == 0)
+                    //{
+
+                    //}
+
                     _context.Update(pcase);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "Case Updated Successfully";
@@ -183,26 +231,17 @@ namespace Case_Management_System.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(OfficerCases));
+                return RedirectToAction(nameof(Index));
             }
 
+            // Repopulate dropdowns if validation fails
             ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeName", pcase.CaseTypeId);
-
-            var citizenRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Citizen")?.Id;
-            var citizenUserIds = _context.UserRoles.Where(ur => ur.RoleId == citizenRoleId).Select(ur => ur.UserId).ToList();
-            var citizenUsers = _context.applicationUsers.Where(u => citizenUserIds.Contains(u.Id)).ToList();
-            ViewData["CitizenId"] = new SelectList(citizenUsers, "Id", "UserName", pcase.CitizenId);
-
-            var officerRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Officer")?.Id;
-            var officerUserIds = _context.UserRoles.Where(ur => ur.RoleId == officerRoleId).Select(ur => ur.UserId).ToList();
-            var officerUsers = _context.applicationUsers.Where(u => officerUserIds.Contains(u.Id)).ToList();
-            ViewData["OfficerId"] = new SelectList(officerUsers, "Id", "UserName", pcase.OfficerId);
-            ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" });
-
-            ViewData["Status"] = new SelectList(new List<string> { "Pending", "In Progress", "Resolved" }, pcase.Status);
+            ViewData["CitizenId"] = new SelectList(_context.applicationUsers, "Id", "UserName", pcase.CitizenId);
+            ViewData["OfficerId"] = new SelectList(_context.applicationUsers, "Id", "UserName", pcase.OfficerId);
 
             return View(pcase);
         }
+
 
 
         public async Task<IActionResult> AssignOfficer(int? id)
@@ -219,7 +258,7 @@ namespace Case_Management_System.Controllers
             }
 
             // Populate the Severity dropdown
-            ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" }, pcase.Severity);
+            //ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" }, pcase.Severity);
 
             // Populate CaseType dropdown
             ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeName", pcase.CaseTypeId);
@@ -287,7 +326,7 @@ namespace Case_Management_System.Controllers
             var officerUsers = _context.applicationUsers.Where(u => officerUserIds.Contains(u.Id)).ToList();
             ViewData["OfficerId"] = new SelectList(officerUsers, "Id", "UserName", pcase.OfficerId);
 
-            ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" }, pcase.Severity);
+            //ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" }, pcase.Severity);
 
             ViewData["Status"] = new SelectList(new List<string> { "Pending", "In Progress", "Resolved" }, pcase.Status);
 
@@ -367,48 +406,6 @@ namespace Case_Management_System.Controllers
 
             return View(applicationDBContext);
         }
-
-
-
-        //[HttpGet]
-        //[Authorize(Roles = "Citizen")]
-        //public async Task<IActionResult> TrackCases()
-        //{
-        //    // Retrieve the current logged-in citizen's ID
-        //    var citizenId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        //    if (string.IsNullOrEmpty(citizenId))
-        //    {
-        //        TempData["error"] = "You must be logged in to view your cases.";
-        //        return RedirectToAction("Login", "Account");
-        //    }
-
-        //    try
-        //    {
-        //        // Fetch all cases reported by this citizen
-        //        var citizenCases = await _context.citizenCases
-        //            .Where(c => c.CitizenId == citizenId)
-        //            .Include(c => c.Case)  // Include related case details
-        //            .ToListAsync();
-
-        //        // Check if any cases were found for the citizen
-        //        if (!citizenCases.Any())
-        //        {
-        //            TempData["info"] = "No cases found. You haven't reported any cases yet.";
-        //            return RedirectToAction("Index", "Cases");  // Redirect to Cases index if no cases exist
-        //        }
-
-        //        // Display the cases for the citizen
-        //        return View(citizenCases);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Log the exception (logging logic to be implemented based on your logging framework)
-        //        TempData["error"] = "An error occurred while fetching your cases. Please try again later.";
-        //        return RedirectToAction("Index", "Cases");  // Redirect to Cases index on error
-        //    }
-        //}
-
 
     }
 

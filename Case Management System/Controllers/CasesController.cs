@@ -200,7 +200,6 @@ namespace Case_Management_System.Controllers
                                 System.IO.File.Delete(oldImagePath);
                             }
                         }
-S
                         using (var fileStream = new FileStream(Path.Combine(evidencePath, fileName), FileMode.Create))
                         {
                             file.CopyTo(fileStream);

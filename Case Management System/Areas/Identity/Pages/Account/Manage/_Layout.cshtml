@@ -1,5 +1,5 @@
 ﻿@{
-    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout !=  null)
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
     {
         Layout = parentLayout.ToString();
     }
@@ -9,9 +9,23 @@
     }
 }
 
-<h1>Manage your account</h1>
+<style>
+    .account-section {
+        background-color: white;
+        padding: 20px;
+    }
 
-<div>
+    .head {
+        text-align: center;
+        font-weight: bold; 
+        margin-bottom: 75px;
+    }
+</style>
+
+
+
+<div class="account-section">
+    <h1 class="head">Manage your account</h1>
     <h2>Change your account settings</h2>
     <hr />
     <div class="row">

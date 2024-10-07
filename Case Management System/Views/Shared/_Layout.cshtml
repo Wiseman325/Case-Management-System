@@ -23,8 +23,6 @@
     <link href="~/assets/css/style.css" rel="stylesheet" />
     <!-- responsive style -->
     <link href="~/assets/css/responsive.css" rel="stylesheet" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"   />
-
 </head>
 
 <body>
@@ -39,7 +37,6 @@
         <header class="header_section">
             <div class="container-fluid">
                 <nav class="navbar navbar-expand-lg custom_nav-container">
-
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                         <span>SAPS</span>
                     </a>
@@ -53,25 +50,32 @@
                             @if (User.IsInRole(SD.Role_Citizen))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Cases" asp-action="TrackCases">View My Cases</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Cases" asp-action="TrackCases">View My Cases</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Cases" asp-action="Create">Report Case</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Cases" asp-action="Create">Report Case</a>
                                 </li>
                             }
                             @if (User.IsInRole(SD.Role_StationCommander))
                             {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Case Management
+                                    </a>
+                                    <ul class="dropdown-menu">
                                         <li class="nav-item">
-                                            <a class="nav-link text-white" asp-area="" asp-controller="Cases" asp-action="Index">All Reported Cases</a>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Cases" asp-action="Index">All Reported Cases</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-white" asp-area="" asp-controller="CaseTypes" asp-action="Index">Add Case Types</a>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="CaseTypes" asp-action="Index">Add Case Types</a>
                                         </li>
+                                    </ul>
+                                </li>
                             }
                             @if (User.IsInRole(SD.Role_Officer))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-area="" asp-controller="Cases" asp-action="OfficerCases">View My Cases</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Cases" asp-action="OfficerCases">View My Cases</a>
                                 </li>
                             }
                         </ul>
@@ -92,6 +96,13 @@
 
         <!-- footer section -->
         <section class="footer_section">
+
+            <div class="container">
+                <p>
+                    &copy; <span id="displayYear"></span> All Rights Reserved By
+                    <a href="#">The students of the Durban University of Technology.</a>
+                </p>
+            </div>
 
             <!-- info section -->
             <section class="info_section layout_padding2">
@@ -130,15 +141,10 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="col-md-6 col-lg-3 info_col">
-                            <div class="info_detail">
-                                <h4>Info</h4>
-                                <p>For more info contact us on our lines.</p>
-                            </div>
-                        </div>
+
                         <div class="col-md-6 col-lg-2 mx-auto info_col">
                             <div class="info_link_box">
-                                <h4>Links</h4>
+                                <h4 class="social_links">Links</h4>
                                 <div class="info_links">
                                     <a class="active" href="index.html">Home</a>
                                     <a class="" href="about.html">About</a>
@@ -148,6 +154,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-md-6 col-lg-3 info_col">
                             <h4>Join Us !!!</h4>
                             <form action="#">
@@ -160,12 +167,7 @@
             </section>
             <!-- end info section -->
 
-            <div class="container">
-                <p>
-                    &copy; <span id="displayYear"></span> All Rights Reserved By
-                    <a href="#">The students of the Durban University of Technology.</a>
-                </p>
-            </div>
+            
 
         </section>
         <!-- end footer section -->

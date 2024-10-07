@@ -23,6 +23,11 @@
                             <p class="mb-2"><strong>Date Reported:</strong> @citizenCase.DateReported.ToShortDateString()</p>
                             <p class="mb-2"><strong>Case Description:</strong> @Html.DisplayFor(modelItem => citizenCase.CaseDescription)</p>
                             <p class="mb-2"><strong>Status:</strong> @citizenCase.Status</p>
+                            @if (citizenCase.Status == "In Progress" ||
+                           citizenCase.Status == "Resolved")
+                            {
+                                <p class="mb-2"><strong>Status Reason:</strong> @Html.DisplayFor(modelItem => citizenCase.StatusReason)</p>
+                            }
                             <div class="d-flex justify-content-between">
                                 <a href="@Url.Action("Details", "Cases", new { id = citizenCase.CaseNum })" class="btn btn-sm btn-outline-primary">
                                     More Details

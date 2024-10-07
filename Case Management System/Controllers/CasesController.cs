@@ -78,58 +78,38 @@ namespace Case_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CaseNum,CaseDescription,IncidentDate,IncidentTime,Location,StreetAddress,DateReported,CaseTypeId,CitizenId,OfficerId,StatusReason")] Case pcase, IFormFile file)
         {
-            //string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-            //if (!Directory.Exists(uploadsFolder))
-            //{
-            //    Directory.CreateDirectory(uploadsFolder);
-            //}
-            //string fileName = Path.GetFileName(file.FileName);
-            //string fileSavedPath = Path.Combine(uploadsFolder, fileName);
+                //string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                //if (!Directory.Exists(uploadsFolder))
+                //{
+                //    Directory.CreateDirectory(uploadsFolder);
+                //}
 
-            //using (FileStream stream = new FileStream(fileSavedPath, FileMode.Create))
-            //{
-            //    await file.CopyToAsync(stream);
-            //}
-            //ViewBag.Message = fileName + " uploaded successfully!";
+                //string fileName = Path.GetFileName(file.FileName);
+                //string fileSavedPath = Path.Combine(uploadsFolder, fileName);
 
-            
+                //// Save the file
+                //using (FileStream stream = new FileStream(fileSavedPath, FileMode.Create))
+                //{
+                //    await file.CopyToAsync(stream);
+                //}
+
+                //// Save the file path to the Evidence field
+                //pcase.Evidence = @"uploads\" + fileName; // Save the relative path
+
+
+
             var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             pcase.CitizenId = loggedInUserId;
 
             if (!ModelState.IsValid)
             {
-                string wwwRootPath = _webHostEnvironment.WebRootPath;
-                if (file != null)
-                {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    string evidencePath = Path.Combine(wwwRootPath, @"files\evidence");
-
-                    if (!string.IsNullOrEmpty(pcase.Evidence))
-                    {
-                        var oldImagePath = Path.Combine(wwwRootPath, pcase.Evidence.TrimStart('\\'));
-                        if (System.IO.File.Exists(oldImagePath))
-                        {
-                            System.IO.File.Delete(oldImagePath);
-                        }
-                    }
-
-                    using (var fileStream = new FileStream(Path.Combine(evidencePath, fileName), FileMode.Create))
-                    {
-                        file.CopyTo(fileStream);
-                    }
-
-                    pcase.Evidence = @"files\evidence\" + fileName;
-                }
-
-                // Set Priority based on CaseNum
-                pcase.SetPriority();
                 pcase.Status = "Pending";
 
                 _context.Add(pcase);
                 await _context.SaveChangesAsync();
 
                 TempData["success"] = "Case Reported Successfully";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home");
             }
 
             // Repopulate dropdowns if validation fails
@@ -142,8 +122,17 @@ namespace Case_Management_System.Controllers
 
 
         // GET: Cases/Edit/5
-        public async Task<IActionResult> Edit(int? id, IFormFile? file)
+        public async Task<IActionResult> Edit(int? id, IFormFile file)
         {
+            //// Fetch evidence paths for the case
+            //var evidencePaths = Directory.GetFiles(Path.Combine(_webHostEnvironment.WebRootPath, "uploads"))
+            //    .Select(Path.GetFileName)
+            //    .ToList();
+
+            //// Use ViewBag or ViewData to pass the evidence paths
+            //ViewBag.EvidencePaths = evidencePaths;
+
+
             if (id == null)
             {
                 return NotFound();
@@ -185,36 +174,6 @@ namespace Case_Management_System.Controllers
             {
                 try
                 {
-                    string wwwRootPath = _webHostEnvironment.WebRootPath;
-                    if (file != null)
-                    {
-                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                        string evidencePath = Path.Combine(wwwRootPath, @"files\evidence");
-
-                        if (!string.IsNullOrEmpty(pcase.Evidence))
-                        {
-                            var oldImagePath = Path.Combine(wwwRootPath, pcase.Evidence.TrimStart('\\'));
-
-                            if (System.IO.File.Exists(oldImagePath))
-                            {
-                                System.IO.File.Delete(oldImagePath);
-                            }
-                        }
-
-                        using (var fileStream = new FileStream(Path.Combine(evidencePath, fileName), FileMode.Create))
-                        {
-                            file.CopyTo(fileStream);
-                        }
-
-                        pcase.Evidence = @"files\evidence\" + fileName;
-                    }
-                    // Set Priority based on CaseNum
-                    pcase.SetPriority();
-                    //if(pcase.CaseNum == 0)
-                    //{
-
-                    //}
-
                     _context.Update(pcase);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "Case Updated Successfully";
@@ -230,8 +189,7 @@ namespace Case_Management_System.Controllers
                         throw;
                     }
                 }
-
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("OfficerCases", "Cases");
             }
 
             // Repopulate dropdowns if validation fails
@@ -257,9 +215,6 @@ namespace Case_Management_System.Controllers
                 return NotFound();
             }
 
-            // Populate the Severity dropdown
-            //ViewData["Severity"] = new SelectList(new List<string> { "Low", "Medium", "High" }, pcase.Severity);
-
             // Populate CaseType dropdown
             ViewData["CaseTypeId"] = new SelectList(_context.casesType, "CaseTypeId", "CaseTypeName", pcase.CaseTypeId);
 
@@ -281,7 +236,7 @@ namespace Case_Management_System.Controllers
         // POST: Cases/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AssignOfficer(int id, [Bind("CaseNum,CaseDescription,IncidentDate,IncidentTime,Location,Severity,DateReported,CaseTypeId,CitizenId,OfficerId")] Case pcase)
+        public async Task<IActionResult> AssignOfficer(int id, [Bind("CaseNum,CaseDescription,IncidentDate,IncidentTime,Location,Severity,StreetAddress,DateReported,CaseTypeId,CitizenId,OfficerId")] Case pcase)
         {
             if (id != pcase.CaseNum)
             {
@@ -309,7 +264,6 @@ namespace Case_Management_System.Controllers
                         throw;
                     }
                 }
-                //return RedirectToAction(nameof(Index));
 
             }
 
@@ -370,7 +324,8 @@ namespace Case_Management_System.Controllers
 
             await _context.SaveChangesAsync();
             TempData["success"] = "Case Deleted Successfully";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Home");
+
         }
 
         private bool CaseExists(int id)

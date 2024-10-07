@@ -18,7 +18,6 @@
             <input type="hidden" asp-for="CaseNum" \
             />
             <input type="hidden" asp-for="CitizenId" />
-            @* <input type="hidden" asp-for="Severity" /> *@
             <input type="hidden" asp-for="CaseTypeId" />
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -47,15 +46,12 @@
                         <label asp-for="Location" class="control-label"></label>
                         <input asp-for="Location" class="form-control border-0 shadow" readonly />
                         <span asp-validation-for="Location" class="text-danger"></span>
+                    </div>    
+                    <div class="form-floating py-2">
+                        <label asp-for="StreetAddress" class="control-label"></label>
+                        <input asp-for="StreetAddress" class="form-control border-0 shadow" readonly />
+                        <span asp-validation-for="StreetAddress" class="text-danger"></span>
                     </div>
-
-@*                     <div class="form-floating py-2 col-12">
-                        <select asp-for="Severity" class="form-select border-0 shadow" asp-items="ViewBag.Severity" disabled>
-                            <option disabled selected>--Select Severity--</option>
-                        </select>
-                        <label asp-for="Severity" class="ms-2">Severity</label>
-                        <span asp-validation-for="Severity" class="text-danger"></span>
-                    </div> *@
 
                     <div class="form-floating py-2">
                         <label asp-for="CaseTypeId" class="control-label" readonly></label>

@@ -83,7 +83,7 @@ namespace Case_Management_System.Migrations
 
                     b.HasIndex("OfficerId");
 
-                    b.ToTable("cases");
+                    b.ToTable("cases", (string)null);
                 });
 
             modelBuilder.Entity("Case_Management_System.Models.CaseType", b =>
@@ -100,7 +100,7 @@ namespace Case_Management_System.Migrations
 
                     b.HasKey("CaseTypeId");
 
-                    b.ToTable("casesType");
+                    b.ToTable("casesType", (string)null);
                 });
 
             modelBuilder.Entity("Case_Management_System.Models.CitizenCase", b =>
@@ -131,7 +131,7 @@ namespace Case_Management_System.Migrations
 
                     b.HasIndex("CitizenId");
 
-                    b.ToTable("citizenCases");
+                    b.ToTable("citizenCases", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

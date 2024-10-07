@@ -78,23 +78,23 @@ namespace Case_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CaseNum,CaseDescription,IncidentDate,IncidentTime,Location,StreetAddress,DateReported,CaseTypeId,CitizenId,OfficerId,StatusReason")] Case pcase, IFormFile file)
         {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
+                //string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                //if (!Directory.Exists(uploadsFolder))
+                //{
+                //    Directory.CreateDirectory(uploadsFolder);
+                //}
 
-                string fileName = Path.GetFileName(file.FileName);
-                string fileSavedPath = Path.Combine(uploadsFolder, fileName);
+                //string fileName = Path.GetFileName(file.FileName);
+                //string fileSavedPath = Path.Combine(uploadsFolder, fileName);
 
-                // Save the file
-                using (FileStream stream = new FileStream(fileSavedPath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
+                //// Save the file
+                //using (FileStream stream = new FileStream(fileSavedPath, FileMode.Create))
+                //{
+                //    await file.CopyToAsync(stream);
+                //}
 
-                // Save the file path to the Evidence field
-                pcase.Evidence = @"uploads\" + fileName; // Save the relative path
+                //// Save the file path to the Evidence field
+                //pcase.Evidence = @"uploads\" + fileName; // Save the relative path
 
 
 
@@ -124,13 +124,13 @@ namespace Case_Management_System.Controllers
         // GET: Cases/Edit/5
         public async Task<IActionResult> Edit(int? id, IFormFile file)
         {
-            // Fetch evidence paths for the case
-            var evidencePaths = Directory.GetFiles(Path.Combine(_webHostEnvironment.WebRootPath, "uploads"))
-                .Select(Path.GetFileName)
-                .ToList();
+            //// Fetch evidence paths for the case
+            //var evidencePaths = Directory.GetFiles(Path.Combine(_webHostEnvironment.WebRootPath, "uploads"))
+            //    .Select(Path.GetFileName)
+            //    .ToList();
 
-            // Use ViewBag or ViewData to pass the evidence paths
-            ViewBag.EvidencePaths = evidencePaths;
+            //// Use ViewBag or ViewData to pass the evidence paths
+            //ViewBag.EvidencePaths = evidencePaths;
 
 
             if (id == null)
@@ -264,7 +264,6 @@ namespace Case_Management_System.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
 
             }
 

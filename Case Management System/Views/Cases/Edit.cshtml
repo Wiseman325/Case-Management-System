@@ -24,7 +24,7 @@
             <input type="hidden" asp-for="Evidence" />
 
             <div class="row">
-                <div class="col-md-9">
+                <div class="col-md-11">
                     <div class="form-floating py-2">
                         <label asp-for="CaseDescription" class="control-label"></label>
                         <input asp-for="CaseDescription" class="form-control border-0 shadow" readonly />
@@ -102,9 +102,9 @@
                     </div>
                 </div>
 
-                <div class="col-3">
+                <div class="col-1">
                     <div>
-                        <strong>Uploaded Evidence:</strong>
+@*                         <strong>Uploaded Evidence:</strong>
                         @if (!string.IsNullOrEmpty(Model.Evidence))
                         {
                             <img src="@Model.Evidence" width="100"
@@ -113,7 +113,7 @@
                         else
                         {
                             <span>No Evidence Available</span>
-                        }
+                        } *@
                     </div>
                 </div>
             </div>

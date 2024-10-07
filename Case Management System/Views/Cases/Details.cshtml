@@ -54,18 +54,6 @@
                     <label>@Html.DisplayNameFor(model => model.Location)</label>
                 </div>
             </dd>
-@*             @if (!User.IsInRole(SD.Role_Citizen))
-            {
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.Severity)
-                </dt>
-                <dd class="col-sm-9">
-                    <div class="form-floating">
-                        <input class="form-control border-0 shadow" value="@Model.Severity" readonly />
-                        <label>@Html.DisplayNameFor(model => model.Severity)</label>
-                    </div>
-                </dd>
-            } *@
 
 
             <dt class="col-sm-3">
@@ -90,6 +78,16 @@
             @if (!User.IsInRole(SD.Role_Citizen))
             {
                 <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.StatusReason)
+                </dt>
+                <dd class="col-sm-9">
+                    <div class="form-floating">
+                        <input class="form-control border-0 shadow" value="@Model.StatusReason" readonly />
+                        <label>@Html.DisplayNameFor(model => model.StatusReason)</label>
+                    </div>
+                </dd>
+
+                <dt class="col-sm-3">
                     @Html.DisplayNameFor(model => model.Citizen.Id)
                 </dt>
                 <dd class="col-sm-9">
@@ -98,7 +96,6 @@
                         <label>@Html.DisplayNameFor(model => model.Citizen.Id)</label>
                     </div>
                 </dd>
-            }
            
 
             <dt class="col-sm-3">
@@ -110,6 +107,7 @@
                     <label>@Html.DisplayNameFor(model => model.Officer.Id)</label>
                 </div>
             </dd>
+            }
         </dl>
         @if (User.IsInRole(SD.Role_Citizen))
         {

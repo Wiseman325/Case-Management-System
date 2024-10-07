@@ -23,6 +23,50 @@
     <link href="~/assets/css/style.css" rel="stylesheet" />
     <!-- responsive style -->
     <link href="~/assets/css/responsive.css" rel="stylesheet" />
+
+    <style>
+        /* Add custom styles for the main content area */
+        main {
+            min-height: 500px; /* Set an initial minimum height for the main content area */
+            padding-top: 20px; /* Add padding to create space from the navbar */
+            padding-bottom: 20px; /* Add padding to create space from the footer */
+        }
+
+        .info_col {
+            text-align: center; /* Center the content inside the column */
+        }
+
+        .info_links {
+            display: flex; /* Use flexbox to arrange links horizontally */
+            flex-direction: column; /* Ensure the links are arranged vertically */
+            align-items: center; /* Center the links horizontally */
+            gap: 10px; /* Optional: add space between links */
+        }
+
+        .contact_link_box {
+            text-align: center; /* Center the text and icons inside the box */
+            margin: 0 auto; /* Center the box within its parent */
+        }
+
+            .contact_link_box a {
+                display: flex; /* Use flexbox for alignment */
+                align-items: center; /* Vertically align icons and text */
+                justify-content: center; /* Center the items horizontally */
+                gap: 10px; /* Optional: space between icon and text */
+                margin: 10px 0; /* Space between links */
+            }
+
+        .info_social {
+            display: flex; /* Use flexbox for centering */
+            justify-content: center; /* Center the icons horizontally */
+            gap: 10px; /* Space between icons */
+            margin-top: 15px; /* Space above the social icons */
+        }
+
+            .info_social a {
+                font-size: 24px; /* Adjust icon size if needed */
+            }
+    </style>
 </head>
 
 <body>
@@ -37,7 +81,6 @@
         <header class="header_section">
             <div class="container-fluid">
                 <nav class="navbar navbar-expand-lg custom_nav-container">
-
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                         <span>SAPS</span>
                     </a>
@@ -98,6 +141,13 @@
         <!-- footer section -->
         <section class="footer_section">
 
+            <div class="container">
+                <p>
+                    &copy; <span id="displayYear"></span> All Rights Reserved By
+                    <a href="#">The students of the Durban University of Technology.</a>
+                </p>
+            </div>
+
             <!-- info section -->
             <section class="info_section layout_padding2">
                 <div class="container">
@@ -135,15 +185,10 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="col-md-6 col-lg-3 info_col">
-                            <div class="info_detail">
-                                <h4>Info</h4>
-                                <p>For more info contact us on our lines.</p>
-                            </div>
-                        </div>
+
                         <div class="col-md-6 col-lg-2 mx-auto info_col">
                             <div class="info_link_box">
-                                <h4>Links</h4>
+                                <h4 class="social_links">Links</h4>
                                 <div class="info_links">
                                     <a class="active" href="index.html">Home</a>
                                     <a class="" href="about.html">About</a>
@@ -153,6 +198,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-md-6 col-lg-3 info_col">
                             <h4>Join Us !!!</h4>
                             <form action="#">
@@ -165,12 +211,7 @@
             </section>
             <!-- end info section -->
 
-            <div class="container">
-                <p>
-                    &copy; <span id="displayYear"></span> All Rights Reserved By
-                    <a href="#">The students of the Durban University of Technology.</a>
-                </p>
-            </div>
+            
 
         </section>
         <!-- end footer section -->

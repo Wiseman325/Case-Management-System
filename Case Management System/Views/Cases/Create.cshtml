@@ -27,10 +27,10 @@
                             <label asp-for="CaseTypeId" class="ms-2 text-muted">Case Type</label>
                             <span asp-validation-for="CaseTypeId" class="text-danger"></span>
                         </div>
-
-                        <div class="py-2 col-12">
-                            <label asp-for="CaseDescription" class="ms-2">Case Description</label>
-                            <textarea asp-for="CaseDescription" class="form-control border-0 shadow"></textarea>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="CaseDescription" class="form-control border-0 shadow" />
+                            <label asp-for="CaseDescription" class="ms-2">Description</label>
+                            <span asp-validation-for="CaseDescription" class="text-danger"></span>
                         </div>
 
                         <div class="form-floating py-2 col-12">
@@ -98,6 +98,9 @@
                         </span>
                     </div>
                 </div>
+@*             <div class="col-2">
+
+            </div> *@
             </div>
         </form>
     </div>

@@ -78,58 +78,36 @@ namespace Case_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CaseNum,CaseDescription,IncidentDate,IncidentTime,Location,StreetAddress,DateReported,CaseTypeId,CitizenId,OfficerId,StatusReason")] Case pcase, IFormFile file)
         {
-            //string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-            //if (!Directory.Exists(uploadsFolder))
-            //{
-            //    Directory.CreateDirectory(uploadsFolder);
-            //}
-            //string fileName = Path.GetFileName(file.FileName);
-            //string fileSavedPath = Path.Combine(uploadsFolder, fileName);
+            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+            string fileName = Path.GetFileName(file.FileName);
+            string fileSavedPath = Path.Combine(uploadsFolder, fileName);
 
-            //using (FileStream stream = new FileStream(fileSavedPath, FileMode.Create))
-            //{
-            //    await file.CopyToAsync(stream);
-            //}
-            //ViewBag.Message = fileName + " uploaded successfully!";
+            using (FileStream stream = new FileStream(fileSavedPath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+            ViewBag.Message = fileName + " uploaded successfully!";
 
-            
+
             var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             pcase.CitizenId = loggedInUserId;
 
             if (!ModelState.IsValid)
             {
-                string wwwRootPath = _webHostEnvironment.WebRootPath;
-                if (file != null)
-                {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    string evidencePath = Path.Combine(wwwRootPath, @"files\evidence");
-
-                    if (!string.IsNullOrEmpty(pcase.Evidence))
-                    {
-                        var oldImagePath = Path.Combine(wwwRootPath, pcase.Evidence.TrimStart('\\'));
-                        if (System.IO.File.Exists(oldImagePath))
-                        {
-                            System.IO.File.Delete(oldImagePath);
-                        }
-                    }
-
-                    using (var fileStream = new FileStream(Path.Combine(evidencePath, fileName), FileMode.Create))
-                    {
-                        file.CopyTo(fileStream);
-                    }
-
-                    pcase.Evidence = @"files\evidence\" + fileName;
-                }
 
                 // Set Priority based on CaseNum
-                pcase.SetPriority();
                 pcase.Status = "Pending";
 
                 _context.Add(pcase);
                 await _context.SaveChangesAsync();
 
                 TempData["success"] = "Case Reported Successfully";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home");
+
             }
 
             // Repopulate dropdowns if validation fails
@@ -144,6 +122,19 @@ namespace Case_Management_System.Controllers
         // GET: Cases/Edit/5
         public async Task<IActionResult> Edit(int? id, IFormFile? file)
         {
+            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            string fileName = Path.GetFileName(file.FileName);
+            string fileSavePath = Path.Combine(uploadsFolder, fileName);
+
+            List<string> evidence = Directory.GetFiles(fileSavePath, "*.png")
+                    .Select(Path.GetFileName)
+                    .ToList();
             if (id == null)
             {
                 return NotFound();
@@ -185,31 +176,7 @@ namespace Case_Management_System.Controllers
             {
                 try
                 {
-                    string wwwRootPath = _webHostEnvironment.WebRootPath;
-                    if (file != null)
-                    {
-                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                        string evidencePath = Path.Combine(wwwRootPath, @"files\evidence");
-
-                        if (!string.IsNullOrEmpty(pcase.Evidence))
-                        {
-                            var oldImagePath = Path.Combine(wwwRootPath, pcase.Evidence.TrimStart('\\'));
-
-                            if (System.IO.File.Exists(oldImagePath))
-                            {
-                                System.IO.File.Delete(oldImagePath);
-                            }
-                        }
-S
-                        using (var fileStream = new FileStream(Path.Combine(evidencePath, fileName), FileMode.Create))
-                        {
-                            file.CopyTo(fileStream);
-                        }
-
-                        pcase.Evidence = @"files\evidence\" + fileName;
-                    }
                     // Set Priority based on CaseNum
-                    pcase.SetPriority();
                     //if(pcase.CaseNum == 0)
                     //{
 
